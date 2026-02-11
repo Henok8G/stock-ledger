@@ -1,5 +1,8 @@
 import { useState, createContext, useContext, useCallback, type ReactNode } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { exportToCsv } from "@/lib/exportCsv";
+import { products } from "@/data/mockData";
 import {
   LayoutDashboard,
   Package,
@@ -14,7 +17,6 @@ import {
   Sun,
   User,
   LogOut,
-  Building2,
   FileDown,
   Menu,
   X,
@@ -50,6 +52,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const [darkMode, setDarkMode] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { profile, signOut } = useAuth();
 
   const toggleSidebar = useCallback(() => setSidebarCollapsed((c) => !c), []);
   const toggleDarkMode = useCallback(() => {
@@ -148,19 +152,24 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             <div className="flex-1" />
 
             {/* Search */}
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md bg-accent text-muted-foreground text-sm w-64">
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md bg-accent text-muted-foreground text-sm w-56 overflow-hidden">
               <Search className="w-4 h-4 shrink-0" />
               <input
                 type="text"
-                placeholder="Search by name, model, SKU or serial…"
-                className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground/60 text-foreground"
+                placeholder="Search…"
+                className="flex-1 min-w-0 bg-transparent outline-none placeholder:text-muted-foreground/60 text-foreground truncate"
                 aria-label="Global search"
               />
-              <kbd className="hidden md:inline text-xs px-1.5 py-0.5 rounded border border-border text-muted-foreground">⌘K</kbd>
+              <kbd className="hidden md:inline text-xs px-1.5 py-0.5 rounded border border-border text-muted-foreground shrink-0">⌘K</kbd>
             </div>
 
             {/* Quick export */}
             <button
+              onClick={() => {
+                const headers = ["Name", "Brand", "Category", "Stock", "Buying Price"];
+                const rows = products.map(p => [p.name, p.brand, p.category, p.qty_in_stock, p.buying_price]);
+                exportToCsv("quick-export.csv", headers, rows);
+              }}
               className="p-1.5 rounded-md hover:bg-accent transition-colors text-muted-foreground"
               aria-label="Quick export"
             >
@@ -183,20 +192,17 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-xs font-medium"
                 aria-label="User menu"
               >
-                AM
+                {(profile?.full_name || "U").slice(0, 2).toUpperCase()}
               </button>
               {userMenuOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
                   <div className="absolute right-0 top-10 z-50 w-48 rounded-lg border border-border bg-popover text-popover-foreground modal-shadow py-1 animate-fade-in">
-                    <button className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-accent transition-colors">
+                    <button onClick={() => { setUserMenuOpen(false); navigate("/settings"); }} className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-accent transition-colors">
                       <User className="w-4 h-4" /> Profile
                     </button>
-                    <button className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-accent transition-colors">
-                      <Building2 className="w-4 h-4" /> Switch Company
-                    </button>
                     <div className="h-px bg-border my-1" />
-                    <button className="flex items-center gap-2 w-full px-3 py-2 text-sm text-destructive hover:bg-accent transition-colors">
+                    <button onClick={() => { setUserMenuOpen(false); signOut(); }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-destructive hover:bg-accent transition-colors">
                       <LogOut className="w-4 h-4" /> Log Out
                     </button>
                   </div>

@@ -22,14 +22,11 @@ export default function AddProductModal({ open, onClose }: AddProductModalProps)
   const [category, setCategory] = useState("");
   const [brand, setBrand] = useState("");
   const [customBrand, setCustomBrand] = useState("");
-  const [model, setModel] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [qty, setQty] = useState(1);
   const [buyingPrice, setBuyingPrice] = useState<number>(0);
-  const [supplier, setSupplier] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  const [location, setLocation] = useState("");
 
   if (!open) return null;
 
@@ -83,27 +80,15 @@ export default function AddProductModal({ open, onClose }: AddProductModalProps)
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="text-xs font-medium text-muted-foreground mb-1 block">Product Name *</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. HP EliteBook 840 G6"
-                  className="w-full px-3 py-1.5 rounded-md border border-border bg-background text-sm placeholder:text-muted-foreground/60"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-medium text-muted-foreground mb-1 block">Model *</label>
-                <input
-                  type="text"
-                  value={model}
-                  onChange={(e) => setModel(e.target.value)}
-                  placeholder="e.g. 840 G6"
-                  className="w-full px-3 py-1.5 rounded-md border border-border bg-background text-sm placeholder:text-muted-foreground/60"
-                />
-              </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Product Name *</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. HP EliteBook 840 G6"
+                className="w-full px-3 py-1.5 rounded-md border border-border bg-background text-sm placeholder:text-muted-foreground/60"
+              />
             </div>
 
             <div>
@@ -141,36 +126,13 @@ export default function AddProductModal({ open, onClose }: AddProductModalProps)
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="text-xs font-medium text-muted-foreground mb-1 block">Supplier</label>
-                <input
-                  type="text"
-                  value={supplier}
-                  onChange={(e) => setSupplier(e.target.value)}
-                  placeholder="Supplier name"
-                  className="w-full px-3 py-1.5 rounded-md border border-border bg-background text-sm placeholder:text-muted-foreground/60"
-                />
-              </div>
-              <div>
-                <label className="text-xs font-medium text-muted-foreground mb-1 block">Date of Entry</label>
-                <input
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                  className="w-full px-3 py-1.5 rounded-md border border-border bg-background text-sm"
-                />
-              </div>
-            </div>
-
             <div>
-              <label className="text-xs font-medium text-muted-foreground mb-1 block">Location</label>
+              <label className="text-xs font-medium text-muted-foreground mb-1 block">Date of Entry</label>
               <input
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="e.g. Warehouse A, Shelf C1"
-                className="w-full px-3 py-1.5 rounded-md border border-border bg-background text-sm placeholder:text-muted-foreground/60"
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                className="w-full px-3 py-1.5 rounded-md border border-border bg-background text-sm"
               />
             </div>
 

@@ -7,6 +7,8 @@ import { products, formatETB, formatDate } from "@/data/mockData";
 import type { Product } from "@/data/mockData";
 import DetailDrawer from "@/components/shared/DetailDrawer";
 import AddProductModal from "@/components/shared/AddProductModal";
+import { exportToCsv, exportToPdf } from "@/lib/exportCsv";
+import { toast } from "@/hooks/use-toast";
 
 const categories = ["All", "Laptop", "Mouse", "Keyboard", "Mic", "Accessory"];
 const brands = ["All", "HP", "Lenovo", "Dell", "Asus", "Chromebook", "Logitech", "Blue", "Seagate", "SanDisk", "Rain Design"];
@@ -37,85 +39,65 @@ export default function Inventory() {
     return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-success/10 text-success">{qty} in stock</span>;
   };
 
+  const handleExport = () => {
+    const headers = ["Name", "Model", "Brand", "Category", "Stock", "Buying Price", "Date Added"];
+    const rows = filtered.map(p => [p.name, p.model, p.brand, p.category, p.qty_in_stock, p.buying_price, p.date_of_entry]);
+    exportToCsv("inventory.csv", headers, rows);
+    toast({ title: "Exported", description: `${filtered.length} products exported to CSV.` });
+  };
+
+  const handleDelete = (p: Product) => {
+    toast({ title: "Delete", description: `"${p.name}" would be deleted (requires database connection).`, variant: "destructive" });
+    setDrawerProduct(null);
+  };
+
   return (
     <div className="space-y-4 max-w-[1400px] mx-auto">
       {/* Top controls */}
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-accent text-sm flex-1 min-w-[200px] max-w-[360px]">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-accent text-sm flex-1 min-w-[200px] max-w-[360px] overflow-hidden">
           <Search className="w-4 h-4 text-muted-foreground shrink-0" />
           <input
             type="text"
-            placeholder="Search by name, model, SKU or serial…"
+            placeholder="Search…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground/60 text-foreground"
+            className="flex-1 min-w-0 bg-transparent outline-none placeholder:text-muted-foreground/60 text-foreground truncate"
             aria-label="Search inventory"
           />
         </div>
 
-        <select
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value)}
-          className="px-3 py-1.5 rounded-md border border-border bg-background text-sm text-foreground"
-          aria-label="Filter by category"
-        >
+        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-3 py-1.5 rounded-md border border-border bg-background text-sm text-foreground" aria-label="Filter by category">
           {categories.map((c) => <option key={c} value={c}>{c === "All" ? "All Categories" : c}</option>)}
         </select>
 
-        <select
-          value={brandFilter}
-          onChange={(e) => setBrandFilter(e.target.value)}
-          className="px-3 py-1.5 rounded-md border border-border bg-background text-sm text-foreground"
-          aria-label="Filter by brand"
-        >
+        <select value={brandFilter} onChange={(e) => setBrandFilter(e.target.value)} className="px-3 py-1.5 rounded-md border border-border bg-background text-sm text-foreground" aria-label="Filter by brand">
           {brands.map((b) => <option key={b} value={b}>{b === "All" ? "All Brands" : b}</option>)}
         </select>
 
-        <select
-          value={stockFilter}
-          onChange={(e) => setStockFilter(e.target.value)}
-          className="px-3 py-1.5 rounded-md border border-border bg-background text-sm text-foreground"
-          aria-label="Filter by stock status"
-        >
+        <select value={stockFilter} onChange={(e) => setStockFilter(e.target.value)} className="px-3 py-1.5 rounded-md border border-border bg-background text-sm text-foreground" aria-label="Filter by stock status">
           {stockFilters.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
 
         <div className="flex-1" />
 
         <div className="flex items-center gap-1 border border-border rounded-md p-0.5">
-          <button
-            onClick={() => setViewMode("table")}
-            className={`p-1.5 rounded ${viewMode === "table" ? "bg-accent" : ""}`}
-            aria-label="Table view"
-          >
-            <List className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => setViewMode("grid")}
-            className={`p-1.5 rounded ${viewMode === "grid" ? "bg-accent" : ""}`}
-            aria-label="Grid view"
-          >
-            <Grid3X3 className="w-4 h-4" />
-          </button>
+          <button onClick={() => setViewMode("table")} className={`p-1.5 rounded ${viewMode === "table" ? "bg-accent" : ""}`} aria-label="Table view"><List className="w-4 h-4" /></button>
+          <button onClick={() => setViewMode("grid")} className={`p-1.5 rounded ${viewMode === "grid" ? "bg-accent" : ""}`} aria-label="Grid view"><Grid3X3 className="w-4 h-4" /></button>
         </div>
 
-        <button className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-background text-sm font-medium hover:bg-accent transition-colors">
+        <button onClick={handleExport} className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-background text-sm font-medium hover:bg-accent transition-colors">
           <FileDown className="w-4 h-4" /> Export
         </button>
 
-        <button
-          onClick={() => setShowAddProduct(true)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
-        >
+        <button onClick={() => setShowAddProduct(true)} className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">
           <Plus className="w-4 h-4" /> Add Product
         </button>
       </div>
 
-      {/* Results count */}
       <p className="text-sm text-muted-foreground">{filtered.length} product{filtered.length !== 1 ? "s" : ""}</p>
 
       {viewMode === "table" ? (
-        /* Table view */
         <div className="rounded-lg border border-border bg-card card-shadow overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-sm" aria-label="Inventory">
@@ -143,29 +125,22 @@ export default function Inventory() {
                     role="button"
                     aria-label={`View ${p.name}`}
                   >
-                    <td className="px-4 py-2.5" onClick={(e) => e.stopPropagation()}>
-                      <input type="checkbox" className="rounded border-border" aria-label={`Select ${p.name}`} />
-                    </td>
+                    <td className="px-4 py-2.5" onClick={(e) => e.stopPropagation()}><input type="checkbox" className="rounded border-border" aria-label={`Select ${p.name}`} /></td>
                     <td className="px-4 py-2.5 font-medium text-foreground">{p.name}</td>
                     <td className="px-4 py-2.5 text-muted-foreground">{p.model}</td>
                     <td className="px-4 py-2.5 text-muted-foreground">{p.brand}</td>
-                    <td className="px-4 py-2.5">
-                      <span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">{p.category}</span>
-                    </td>
+                    <td className="px-4 py-2.5"><span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">{p.category}</span></td>
                     <td className="px-4 py-2.5 text-right">{stockBadge(p.qty_in_stock)}</td>
                     <td className="px-4 py-2.5 text-right">{formatETB(p.buying_price)}</td>
                     <td className="px-4 py-2.5 text-muted-foreground text-xs">{formatDate(p.date_of_entry)}</td>
                     <td className="px-4 py-2.5" onClick={(e) => e.stopPropagation()}>
-                      <button className="p-1 rounded hover:bg-accent transition-colors" aria-label="More actions">
-                        <MoreHorizontal className="w-4 h-4 text-muted-foreground" />
-                      </button>
+                      <button className="p-1 rounded hover:bg-accent transition-colors" aria-label="More actions"><MoreHorizontal className="w-4 h-4 text-muted-foreground" /></button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          {/* Pagination placeholder */}
           <div className="flex items-center justify-between px-4 py-3 border-t border-border text-sm text-muted-foreground">
             <span>Showing 1–{filtered.length} of {filtered.length}</span>
             <div className="flex items-center gap-1">
@@ -176,18 +151,9 @@ export default function Inventory() {
           </div>
         </div>
       ) : (
-        /* Grid / Card view */
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {filtered.map((p) => (
-            <div
-              key={p.sku}
-              onClick={() => setDrawerProduct(p)}
-              className="rounded-lg border border-border bg-card p-4 card-shadow hover:border-primary/30 cursor-pointer transition-colors"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === "Enter" && setDrawerProduct(p)}
-              role="button"
-              aria-label={`View ${p.name}`}
-            >
+            <div key={p.sku} onClick={() => setDrawerProduct(p)} className="rounded-lg border border-border bg-card p-4 card-shadow hover:border-primary/30 cursor-pointer transition-colors" tabIndex={0} onKeyDown={(e) => e.key === "Enter" && setDrawerProduct(p)} role="button" aria-label={`View ${p.name}`}>
               <div className="flex items-start justify-between mb-2">
                 <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">{p.category}</span>
                 {stockBadge(p.qty_in_stock)}
@@ -203,7 +169,6 @@ export default function Inventory() {
         </div>
       )}
 
-      {/* Product detail drawer */}
       <DetailDrawer open={!!drawerProduct} onClose={() => setDrawerProduct(null)} title={drawerProduct?.name ?? ""}>
         {drawerProduct && (
           <div className="space-y-4 text-sm">
@@ -222,10 +187,16 @@ export default function Inventory() {
             <div><span className="text-muted-foreground">Date of Entry</span><div className="font-medium">{formatDate(drawerProduct.date_of_entry)}</div></div>
             <div className="h-px bg-border" />
             <div className="flex gap-2">
-              <button className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity flex-1 justify-center">
+              <button
+                onClick={() => toast({ title: "Edit", description: `Editing "${drawerProduct.name}" (requires database connection).` })}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity flex-1 justify-center"
+              >
                 <Pencil className="w-3.5 h-3.5" /> Edit
               </button>
-              <button className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-destructive text-destructive text-sm font-medium hover:bg-destructive/10 transition-colors flex-1 justify-center">
+              <button
+                onClick={() => handleDelete(drawerProduct)}
+                className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-destructive text-destructive text-sm font-medium hover:bg-destructive/10 transition-colors flex-1 justify-center"
+              >
                 <Trash2 className="w-3.5 h-3.5" /> Delete
               </button>
             </div>
