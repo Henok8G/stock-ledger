@@ -110,7 +110,6 @@ export default function Sales() {
           <table className="w-full text-sm" aria-label="Sales records">
             <thead>
               <tr className="border-b border-border bg-accent/50">
-                <th className="text-left px-4 py-2 font-medium text-muted-foreground">Sale ID</th>
                 <th className="text-left px-4 py-2 font-medium text-muted-foreground">Date & Time</th>
                 <th className="text-left px-4 py-2 font-medium text-muted-foreground">Item</th>
                 <th className="text-left px-4 py-2 font-medium text-muted-foreground">Model</th>
@@ -134,7 +133,6 @@ export default function Sales() {
                   role="button"
                   aria-label={`View sale ${s.sale_id}`}
                 >
-                  <td className="px-4 py-2.5 font-mono text-xs text-muted-foreground">{s.sale_id}</td>
                   <td className="px-4 py-2.5 text-xs text-muted-foreground">
                     {formatDateTime(s.date)}<br />
                     <span className="text-muted-foreground/60">{relativeTime(s.date)}</span>
@@ -162,7 +160,7 @@ export default function Sales() {
       </div>
 
       {/* Sale detail drawer */}
-      <DetailDrawer open={!!drawerSale} onClose={() => setDrawerSale(null)} title={drawerSale ? `Sale ${drawerSale.sale_id}` : ""}>
+      <DetailDrawer open={!!drawerSale} onClose={() => setDrawerSale(null)} title={drawerSale ? `Sale Details` : ""}>
         {drawerSale && (
           <div className="space-y-4 text-sm">
             <div className="grid grid-cols-2 gap-3">

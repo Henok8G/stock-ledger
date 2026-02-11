@@ -6,6 +6,7 @@ import {
 import { products, formatETB, formatDate } from "@/data/mockData";
 import type { Product } from "@/data/mockData";
 import DetailDrawer from "@/components/shared/DetailDrawer";
+import AddProductModal from "@/components/shared/AddProductModal";
 
 const categories = ["All", "Laptop", "Mouse", "Keyboard", "Mic", "Accessory"];
 const brands = ["All", "HP", "Lenovo", "Dell", "Asus", "Chromebook", "Logitech", "Blue", "Seagate", "SanDisk", "Rain Design"];
@@ -18,6 +19,7 @@ export default function Inventory() {
   const [stockFilter, setStockFilter] = useState("All");
   const [viewMode, setViewMode] = useState<"table" | "grid">("table");
   const [drawerProduct, setDrawerProduct] = useState<Product | null>(null);
+  const [showAddProduct, setShowAddProduct] = useState(false);
 
   const filtered = products.filter((p) => {
     if (search && !`${p.name} ${p.model} ${p.sku}`.toLowerCase().includes(search.toLowerCase())) return false;
@@ -101,7 +103,10 @@ export default function Inventory() {
           <FileDown className="w-4 h-4" /> Export
         </button>
 
-        <button className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">
+        <button
+          onClick={() => setShowAddProduct(true)}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+        >
           <Plus className="w-4 h-4" /> Add Product
         </button>
       </div>
@@ -227,6 +232,8 @@ export default function Inventory() {
           </div>
         )}
       </DetailDrawer>
+
+      <AddProductModal open={showAddProduct} onClose={() => setShowAddProduct(false)} />
     </div>
   );
 }

@@ -2,11 +2,13 @@ import { useState } from "react";
 import { Search, Plus, FileDown } from "lucide-react";
 import { importRecords, formatETB, formatDateTime, relativeTime } from "@/data/mockData";
 import DetailDrawer from "@/components/shared/DetailDrawer";
+import AddImportModal from "@/components/shared/AddImportModal";
 import type { ImportRecord } from "@/data/mockData";
 
 export default function Imported() {
   const [search, setSearch] = useState("");
   const [drawerImport, setDrawerImport] = useState<ImportRecord | null>(null);
+  const [showAddImport, setShowAddImport] = useState(false);
 
   const filtered = importRecords.filter((r) =>
     !search || r.lines.some((l) =>
@@ -32,7 +34,10 @@ export default function Imported() {
         <button className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-background text-sm font-medium hover:bg-accent transition-colors">
           <FileDown className="w-4 h-4" /> Export
         </button>
-        <button className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">
+        <button
+          onClick={() => setShowAddImport(true)}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+        >
           <Plus className="w-4 h-4" /> Add Import
         </button>
       </div>
@@ -42,7 +47,7 @@ export default function Imported() {
           <table className="w-full text-sm" aria-label="Import records">
             <thead>
               <tr className="border-b border-border bg-accent/50">
-                <th className="text-left px-4 py-2 font-medium text-muted-foreground">Import ID</th>
+                <th className="text-left px-4 py-2 font-medium text-muted-foreground">Date & Time</th>
                 <th className="text-left px-4 py-2 font-medium text-muted-foreground">Date & Time</th>
                 <th className="text-left px-4 py-2 font-medium text-muted-foreground">Product(s)</th>
                 <th className="text-left px-4 py-2 font-medium text-muted-foreground">Brand</th>
@@ -66,7 +71,6 @@ export default function Imported() {
                     role="button"
                     aria-label={`View import ${r.import_id}`}
                   >
-                    <td className="px-4 py-2.5 font-mono text-xs text-muted-foreground">{li === 0 ? r.import_id : ""}</td>
                     <td className="px-4 py-2.5 text-xs text-muted-foreground">
                       {li === 0 && <>{formatDateTime(r.date)}<br /><span className="text-muted-foreground/60">{relativeTime(r.date)}</span></>}
                     </td>
@@ -119,6 +123,8 @@ export default function Imported() {
           </div>
         )}
       </DetailDrawer>
+
+      <AddImportModal open={showAddImport} onClose={() => setShowAddImport(false)} />
     </div>
   );
 }
