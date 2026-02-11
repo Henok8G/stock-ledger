@@ -4,15 +4,18 @@ import {
   AlertTriangle, ArrowUpRight, ArrowDownRight, Plus, FileDown, Pencil,
 } from "lucide-react";
 import {
-  LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, PieChart, Pie, Cell,
 } from "recharts";
 import {
   products, salesRecords, importRecords,
-  profitOverTime, unitsSoldByCategory, stockByCategory, topSellingModels,
+  unitsSoldByCategory, stockByCategory,
   formatETB, formatDateTime, relativeTime,
 } from "@/data/mockData";
 import DetailDrawer from "@/components/shared/DetailDrawer";
+import AddImportModal from "@/components/shared/AddImportModal";
+import { useNavigate } from "react-router-dom";
+import { exportToCsv } from "@/lib/exportCsv";
 
 const kpis = [
   {
@@ -57,6 +60,14 @@ const outOfStock = products.filter((p) => p.qty_in_stock === 0);
 
 export default function Dashboard() {
   const [drawerSale, setDrawerSale] = useState<typeof salesRecords[0] | null>(null);
+  const [showAddImport, setShowAddImport] = useState(false);
+  const navigate = useNavigate();
+
+  const handleExportCsv = () => {
+    const headers = ["Item", "Brand", "Category", "Stock", "Buying Price"];
+    const rows = products.map(p => [p.name, p.brand, p.category, p.qty_in_stock, p.buying_price]);
+    exportToCsv("inventory-export.csv", headers, rows);
+  };
 
   return (
     <div className="space-y-6 max-w-[1400px] mx-auto">
@@ -84,30 +95,10 @@ export default function Dashboard() {
       <div className="grid lg:grid-cols-[1fr_380px] gap-6">
         {/* Left column */}
         <div className="space-y-6 min-w-0">
-          {/* Profit over time */}
-          <div className="rounded-lg border border-border bg-card p-4 card-shadow">
-            <h4 className="font-medium text-foreground mb-4">Profit Over Time</h4>
-            <div className="h-[260px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={profitOverTime}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                  <XAxis dataKey="date" tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" />
-                  <YAxis tick={{ fontSize: 12 }} stroke="hsl(var(--muted-foreground))" tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-                  <Tooltip
-                    contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }}
-                    formatter={(value: number) => [formatETB(value), ""]}
-                  />
-                  <Line type="monotone" dataKey="profit" stroke="hsl(var(--chart-2))" strokeWidth={2} dot={{ r: 3 }} />
-                  <Line type="monotone" dataKey="revenue" stroke="hsl(var(--chart-4))" strokeWidth={1.5} strokeDasharray="4 4" dot={false} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
           {/* Units sold by category */}
           <div className="rounded-lg border border-border bg-card p-4 card-shadow">
             <h4 className="font-medium text-foreground mb-4">Units Sold by Category</h4>
-            <div className="h-[200px]">
+            <div className="h-[260px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={unitsSoldByCategory}>
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
@@ -147,7 +138,7 @@ export default function Dashboard() {
                       tabIndex={0}
                       onKeyDown={(e) => e.key === "Enter" && setDrawerSale(sale)}
                       role="button"
-                      aria-label={`View sale ${sale.sale_id}`}
+                      aria-label={`View sale details`}
                     >
                       <td className="px-4 py-2.5 font-medium text-foreground">{sale.product_name}</td>
                       <td className="px-4 py-2.5 text-muted-foreground">{sale.model}</td>
@@ -201,23 +192,6 @@ export default function Dashboard() {
                 <div className="text-lg font-semibold text-destructive">{outOfStock.length}</div>
                 <div className="text-xs text-muted-foreground">Out of Stock</div>
               </div>
-            </div>
-          </div>
-
-          {/* Top selling */}
-          <div className="rounded-lg border border-border bg-card p-4 card-shadow">
-            <h4 className="font-medium text-foreground mb-3">Top Selling Models</h4>
-            <div className="space-y-2">
-              {topSellingModels.map((m, i) => (
-                <div key={i} className="flex items-center gap-3 text-sm">
-                  <span className="w-5 h-5 rounded-full bg-accent flex items-center justify-center text-xs font-medium text-muted-foreground">{i + 1}</span>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium text-foreground truncate">{m.brand} {m.model}</div>
-                    <div className="text-xs text-muted-foreground">{m.category}</div>
-                  </div>
-                  <span className="text-sm font-medium text-foreground">{m.sold} sold</span>
-                </div>
-              ))}
             </div>
           </div>
 
@@ -284,17 +258,29 @@ export default function Dashboard() {
           <div className="rounded-lg border border-border bg-card p-4 card-shadow">
             <h4 className="font-medium text-foreground mb-3">Quick Actions</h4>
             <div className="grid grid-cols-2 gap-2">
-              <button className="flex items-center gap-2 px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">
+              <button
+                onClick={() => setShowAddImport(true)}
+                className="flex items-center gap-2 px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+              >
                 <Plus className="w-4 h-4" /> Add Import
               </button>
-              <button className="flex items-center gap-2 px-3 py-2 rounded-md bg-success text-success-foreground text-sm font-medium hover:opacity-90 transition-opacity">
+              <button
+                onClick={() => navigate("/sales")}
+                className="flex items-center gap-2 px-3 py-2 rounded-md bg-success text-success-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+              >
                 <ShoppingCart className="w-4 h-4" /> Record Sale
               </button>
-              <button className="flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm font-medium hover:bg-accent transition-colors">
+              <button
+                onClick={handleExportCsv}
+                className="flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm font-medium hover:bg-accent transition-colors"
+              >
                 <FileDown className="w-4 h-4" /> Export CSV
               </button>
-              <button className="flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm font-medium hover:bg-accent transition-colors">
-                <Pencil className="w-4 h-4" /> Bulk Edit
+              <button
+                onClick={() => navigate("/inventory")}
+                className="flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm font-medium hover:bg-accent transition-colors"
+              >
+                <Pencil className="w-4 h-4" /> Manage Stock
               </button>
             </div>
           </div>
@@ -333,6 +319,8 @@ export default function Dashboard() {
           </div>
         )}
       </DetailDrawer>
+
+      <AddImportModal open={showAddImport} onClose={() => setShowAddImport(false)} />
     </div>
   );
 }

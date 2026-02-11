@@ -5,6 +5,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { salesRecords, profitOverTime, formatETB, formatDateTime, relativeTime } from "@/data/mockData";
+import { exportToCsv, exportToPdf } from "@/lib/exportCsv";
+import { toast } from "@/hooks/use-toast";
 
 const tabs = ["Sales History", "Inventory History"] as const;
 
@@ -35,16 +37,34 @@ export default function HistoryPage() {
   const totalRevenue = salesRecords.reduce((s, r) => s + r.unit_selling_price * r.qty, 0);
   const totalProfit = salesRecords.reduce((s, r) => s + r.profit, 0);
 
+  const handleExportSales = () => {
+    const headers = ["Date", "Item", "Qty", "Revenue", "Cost", "Profit", "Payment"];
+    const rows = salesRecords.map(s => [formatDateTime(s.date), s.product_name, s.qty, s.unit_selling_price * s.qty, s.unit_buying_price * s.qty, s.profit, s.payment_method]);
+    exportToCsv("sales-history.csv", headers, rows);
+    toast({ title: "Exported", description: `${salesRecords.length} sales records exported.` });
+  };
+
+  const handleExportSalesPdf = () => {
+    const headers = ["Date", "Item", "Qty", "Revenue", "Cost", "Profit", "Payment"];
+    const rows = salesRecords.map(s => [formatDateTime(s.date), s.product_name, s.qty, formatETB(s.unit_selling_price * s.qty), formatETB(s.unit_buying_price * s.qty), formatETB(s.profit), s.payment_method]);
+    exportToPdf("Sales History Report", headers, rows);
+  };
+
+  const handleExportInventory = () => {
+    const headers = ["Type", "Item", "Category", "Qty", "Unit Price", "Total", "Date", "Actor"];
+    const rows = inventoryHistory.map(e => [e.type, e.item, e.category, e.qty, e.unit_price, Math.abs(e.total), formatDateTime(e.date), e.actor]);
+    exportToCsv("inventory-history.csv", headers, rows);
+    toast({ title: "Exported", description: `${inventoryHistory.length} inventory events exported.` });
+  };
+
   return (
     <div className="space-y-4 max-w-[1400px] mx-auto">
-      {/* Tab toggle */}
       <div className="flex items-center gap-1 p-1 rounded-lg bg-accent w-fit">
         {tabs.map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors
-              ${activeTab === tab ? "bg-background text-foreground card-shadow" : "text-muted-foreground hover:text-foreground"}`}
+            className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${activeTab === tab ? "bg-background text-foreground card-shadow" : "text-muted-foreground hover:text-foreground"}`}
           >
             {tab}
           </button>
@@ -53,7 +73,6 @@ export default function HistoryPage() {
 
       {activeTab === "Sales History" ? (
         <div className="space-y-6">
-          {/* Info tiles */}
           <div className="grid grid-cols-3 gap-3">
             <div className="rounded-lg border border-border bg-card p-4 card-shadow flex items-center gap-3">
               <div className="p-2 rounded-md bg-accent"><ShoppingCart className="w-4 h-4 text-foreground" /></div>
@@ -69,7 +88,6 @@ export default function HistoryPage() {
             </div>
           </div>
 
-          {/* Charts */}
           <div className="grid lg:grid-cols-2 gap-6">
             <div className="rounded-lg border border-border bg-card p-4 card-shadow">
               <h4 className="font-medium text-foreground mb-4">Profit Over Time</h4>
@@ -102,13 +120,17 @@ export default function HistoryPage() {
             </div>
           </div>
 
-          {/* Read-only sales table */}
           <div className="rounded-lg border border-border bg-card card-shadow overflow-hidden">
             <div className="flex items-center justify-between px-4 py-3 border-b border-border">
               <h4 className="font-medium text-foreground">Sales Records</h4>
-              <button className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-background text-sm font-medium hover:bg-accent transition-colors">
-                <FileDown className="w-4 h-4" /> Export
-              </button>
+              <div className="flex gap-2">
+                <button onClick={handleExportSales} className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-background text-sm font-medium hover:bg-accent transition-colors">
+                  <FileDown className="w-4 h-4" /> CSV
+                </button>
+                <button onClick={handleExportSalesPdf} className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-background text-sm font-medium hover:bg-accent transition-colors">
+                  <FileDown className="w-4 h-4" /> PDF
+                </button>
+              </div>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm" aria-label="Sales history">
@@ -141,11 +163,10 @@ export default function HistoryPage() {
           </div>
         </div>
       ) : (
-        /* Inventory History tab */
         <div className="rounded-lg border border-border bg-card card-shadow overflow-hidden">
           <div className="flex items-center justify-between px-4 py-3 border-b border-border">
             <h4 className="font-medium text-foreground">Inventory Events</h4>
-            <button className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-background text-sm font-medium hover:bg-accent transition-colors">
+            <button onClick={handleExportInventory} className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-background text-sm font-medium hover:bg-accent transition-colors">
               <FileDown className="w-4 h-4" /> Export
             </button>
           </div>
@@ -172,10 +193,7 @@ export default function HistoryPage() {
                     <td className="px-4 py-2.5 text-right">{e.qty}</td>
                     <td className="px-4 py-2.5 text-right">{formatETB(e.unit_price)}</td>
                     <td className="px-4 py-2.5 text-right font-medium">{formatETB(Math.abs(e.total))}</td>
-                    <td className="px-4 py-2.5 text-xs text-muted-foreground">
-                      {formatDateTime(e.date)}<br />
-                      <span className="text-muted-foreground/60">{relativeTime(e.date)}</span>
-                    </td>
+                    <td className="px-4 py-2.5 text-xs text-muted-foreground">{formatDateTime(e.date)}<br /><span className="text-muted-foreground/60">{relativeTime(e.date)}</span></td>
                     <td className="px-4 py-2.5 text-muted-foreground text-xs">{e.actor}</td>
                   </tr>
                 ))}

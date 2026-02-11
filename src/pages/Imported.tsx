@@ -4,6 +4,8 @@ import { importRecords, formatETB, formatDateTime, relativeTime } from "@/data/m
 import DetailDrawer from "@/components/shared/DetailDrawer";
 import AddImportModal from "@/components/shared/AddImportModal";
 import type { ImportRecord } from "@/data/mockData";
+import { exportToCsv } from "@/lib/exportCsv";
+import { toast } from "@/hooks/use-toast";
 
 export default function Imported() {
   const [search, setSearch] = useState("");
@@ -16,22 +18,31 @@ export default function Imported() {
     ) || r.supplier.toLowerCase().includes(search.toLowerCase())
   );
 
+  const handleExport = () => {
+    const headers = ["Date", "Product", "Brand", "Category", "Qty", "Unit Price", "Total", "Supplier", "By"];
+    const rows = filtered.flatMap(r =>
+      r.lines.map(l => [formatDateTime(r.date), l.product_name || "", l.brand || "", l.category || "", l.qty, l.unit_buying_price, l.qty * l.unit_buying_price, r.supplier, r.entered_by])
+    );
+    exportToCsv("imports.csv", headers, rows);
+    toast({ title: "Exported", description: `${rows.length} import lines exported to CSV.` });
+  };
+
   return (
     <div className="space-y-4 max-w-[1400px] mx-auto">
       <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-accent text-sm flex-1 min-w-[200px] max-w-[360px]">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-accent text-sm flex-1 min-w-[200px] max-w-[360px] overflow-hidden">
           <Search className="w-4 h-4 text-muted-foreground shrink-0" />
           <input
             type="text"
-            placeholder="Search imports…"
+            placeholder="Search…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground/60 text-foreground"
+            className="flex-1 min-w-0 bg-transparent outline-none placeholder:text-muted-foreground/60 text-foreground truncate"
             aria-label="Search imports"
           />
         </div>
         <div className="flex-1" />
-        <button className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-background text-sm font-medium hover:bg-accent transition-colors">
+        <button onClick={handleExport} className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-background text-sm font-medium hover:bg-accent transition-colors">
           <FileDown className="w-4 h-4" /> Export
         </button>
         <button
@@ -47,7 +58,6 @@ export default function Imported() {
           <table className="w-full text-sm" aria-label="Import records">
             <thead>
               <tr className="border-b border-border bg-accent/50">
-                <th className="text-left px-4 py-2 font-medium text-muted-foreground">Date & Time</th>
                 <th className="text-left px-4 py-2 font-medium text-muted-foreground">Date & Time</th>
                 <th className="text-left px-4 py-2 font-medium text-muted-foreground">Product(s)</th>
                 <th className="text-left px-4 py-2 font-medium text-muted-foreground">Brand</th>
@@ -69,7 +79,7 @@ export default function Imported() {
                     tabIndex={0}
                     onKeyDown={(e) => e.key === "Enter" && setDrawerImport(r)}
                     role="button"
-                    aria-label={`View import ${r.import_id}`}
+                    aria-label={`View import details`}
                   >
                     <td className="px-4 py-2.5 text-xs text-muted-foreground">
                       {li === 0 && <>{formatDateTime(r.date)}<br /><span className="text-muted-foreground/60">{relativeTime(r.date)}</span></>}
@@ -92,7 +102,7 @@ export default function Imported() {
         </div>
       </div>
 
-      <DetailDrawer open={!!drawerImport} onClose={() => setDrawerImport(null)} title={drawerImport ? `Import ${drawerImport.import_id}` : ""}>
+      <DetailDrawer open={!!drawerImport} onClose={() => setDrawerImport(null)} title={drawerImport ? `Import Details` : ""}>
         {drawerImport && (
           <div className="space-y-4 text-sm">
             <div><span className="text-muted-foreground">Date & Time</span><div className="font-medium">{formatDateTime(drawerImport.date)}</div></div>
