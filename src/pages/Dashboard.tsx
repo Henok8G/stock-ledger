@@ -302,7 +302,7 @@ export default function Dashboard() {
       </div>
 
       {/* Sale detail drawer */}
-      <DetailDrawer open={!!drawerSale} onClose={() => setDrawerSale(null)} title={drawerSale ? `Sale ${drawerSale.sale_id}` : ""}>
+      <DetailDrawer open={!!drawerSale} onClose={() => setDrawerSale(null)} title={drawerSale ? `Sale Details` : ""}>
         {drawerSale && (
           <div className="space-y-4 text-sm">
             <div className="grid grid-cols-2 gap-3">

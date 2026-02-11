@@ -114,7 +114,6 @@ export default function HistoryPage() {
               <table className="w-full text-sm" aria-label="Sales history">
                 <thead>
                   <tr className="border-b border-border bg-accent/50">
-                    <th className="text-left px-4 py-2 font-medium text-muted-foreground">Sale ID</th>
                     <th className="text-left px-4 py-2 font-medium text-muted-foreground">Date</th>
                     <th className="text-left px-4 py-2 font-medium text-muted-foreground">Item</th>
                     <th className="text-right px-4 py-2 font-medium text-muted-foreground">Qty</th>
@@ -127,7 +126,6 @@ export default function HistoryPage() {
                 <tbody>
                   {salesRecords.map((s) => (
                     <tr key={s.sale_id} className="border-b border-border last:border-0 hover:bg-accent/20 transition-colors">
-                      <td className="px-4 py-2.5 font-mono text-xs text-muted-foreground">{s.sale_id}</td>
                       <td className="px-4 py-2.5 text-xs text-muted-foreground">{formatDateTime(s.date)}</td>
                       <td className="px-4 py-2.5 font-medium text-foreground">{s.product_name}</td>
                       <td className="px-4 py-2.5 text-right">{s.qty}</td>
