@@ -17,9 +17,9 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 function ProtectedRoutes() {
-  const { user, loading } = useAuth();
+  const { user, loading, role, roleLoading } = useAuth();
 
-  if (loading) {
+  if (loading || roleLoading) {
     return (
       <div className="flex items-center justify-center h-screen bg-background">
         <div className="animate-pulse text-muted-foreground">Loading…</div>
@@ -27,7 +27,7 @@ function ProtectedRoutes() {
     );
   }
 
-  if (!user) return <Navigate to="/login" replace />;
+  if (!user || !role) return <Navigate to="/login" replace />;
 
   return (
     <AppLayout>
