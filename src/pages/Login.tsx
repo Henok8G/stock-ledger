@@ -4,7 +4,7 @@ import { Navigate } from "react-router-dom";
 import { Package, Eye, EyeOff } from "lucide-react";
 
 export default function Login() {
-  const { user, loading, role, roleLoading, signIn, signUp, signOut } = useAuth();
+  const { user, loading, role, roleLoading, approved, signIn, signUp, signOut } = useAuth();
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -23,7 +23,7 @@ export default function Login() {
   }
 
   // User is logged in but has no role — waiting for approval
-  if (user && !role) {
+  if (user && (!role || !approved)) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-background px-4">
         <div className="w-full max-w-sm text-center">
@@ -51,7 +51,7 @@ export default function Login() {
     );
   }
 
-  if (user && role) return <Navigate to="/" replace />;
+  if (user && role && approved) return <Navigate to="/" replace />;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
