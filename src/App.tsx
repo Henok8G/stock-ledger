@@ -17,7 +17,7 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 function ProtectedRoutes() {
-  const { user, loading, role, roleLoading } = useAuth();
+  const { user, loading, role, roleLoading, approved } = useAuth();
 
   if (loading || roleLoading) {
     return (
@@ -27,7 +27,7 @@ function ProtectedRoutes() {
     );
   }
 
-  if (!user || !role) return <Navigate to="/login" replace />;
+  if (!user || !role || !approved) return <Navigate to="/login" replace />;
 
   return (
     <AppLayout>

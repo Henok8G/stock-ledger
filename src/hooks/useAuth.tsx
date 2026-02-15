@@ -8,7 +8,8 @@ interface AuthContextType {
   loading: boolean;
   role: "owner" | "manager" | null;
   roleLoading: boolean;
-  profile: { full_name: string; email: string } | null;
+  approved: boolean;
+  profile: { full_name: string; email: string; approved: boolean } | null;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
@@ -28,7 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState<"owner" | "manager" | null>(null);
   const [roleLoading, setRoleLoading] = useState(true);
-  const [profile, setProfile] = useState<{ full_name: string; email: string } | null>(null);
+  const [profile, setProfile] = useState<{ full_name: string; email: string; approved: boolean } | null>(null);
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -70,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Fetch profile
     supabase
       .from("profiles")
-      .select("full_name, email")
+      .select("full_name, email, approved")
       .eq("user_id", user.id)
       .maybeSingle()
       .then(({ data }) => {
@@ -100,7 +101,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, role, roleLoading, profile, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ user, session, loading, role, roleLoading, approved: profile?.approved ?? false, profile, signIn, signUp, signOut }}>
       {children}
     </AuthContext.Provider>
   );
