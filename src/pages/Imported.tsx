@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Search, Plus, FileDown, MoreHorizontal, Trash2 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useImports, useDeleteImport, type ImportRecord } from "@/hooks/useImports";
 import { formatETB, formatDateTime, relativeTime } from "@/data/mockData";
 import DetailDrawer from "@/components/shared/DetailDrawer";
@@ -16,7 +17,7 @@ export default function Imported() {
   const [search, setSearch] = useState("");
   const [drawerImport, setDrawerImport] = useState<ImportRecord | null>(null);
   const [showAddImport, setShowAddImport] = useState(false);
-  const [menuOpen, setMenuOpen] = useState<string | null>(null);
+  
 
   const filtered = imports.filter((r) =>
     !search || r.import_line_items.some((l) =>
@@ -40,7 +41,6 @@ export default function Imported() {
     }
     deleteImport.mutate(r.id);
     setDrawerImport(null);
-    setMenuOpen(null);
   };
 
   if (isLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading imports…</div>;
@@ -93,19 +93,16 @@ export default function Imported() {
                     <td className="px-4 py-2.5 text-muted-foreground">{li === 0 ? r.supplier : ""}</td>
                     <td className="px-4 py-2.5 relative" onClick={(e) => e.stopPropagation()}>
                       {li === 0 && (
-                        <>
-                          <button onClick={() => setMenuOpen(menuOpen === r.id ? null : r.id)} className="p-1 rounded hover:bg-accent transition-colors"><MoreHorizontal className="w-4 h-4 text-muted-foreground" /></button>
-                          {menuOpen === r.id && (
-                            <>
-                              <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(null)} />
-                              <div className="absolute right-0 top-8 z-50 w-36 rounded-lg border border-border bg-popover text-popover-foreground modal-shadow py-1 animate-fade-in">
-                                <button onClick={() => handleDelete(r)} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-destructive hover:bg-accent transition-colors">
-                                  <Trash2 className="w-3.5 h-3.5" /> Delete
-                                </button>
-                              </div>
-                            </>
-                          )}
-                        </>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <button className="p-1 rounded hover:bg-accent transition-colors"><MoreHorizontal className="w-4 h-4 text-muted-foreground" /></button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-36">
+                            <DropdownMenuItem onClick={() => handleDelete(r)} className="text-destructive focus:text-destructive">
+                              <Trash2 className="w-3.5 h-3.5 mr-2" /> Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       )}
                     </td>
                   </tr>

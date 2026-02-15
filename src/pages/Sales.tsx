@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Search, FileDown, ShoppingCart, MoreHorizontal, Trash2 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useSales, useRecordSale, useDeleteSale, type SaleRecord } from "@/hooks/useSales";
 import { useProducts } from "@/hooks/useProducts";
 import { formatETB, formatDateTime, relativeTime } from "@/data/mockData";
@@ -21,7 +22,7 @@ export default function Sales() {
   const [paymentFilter, setPaymentFilter] = useState("All");
   const [drawerSale, setDrawerSale] = useState<SaleRecord | null>(null);
   const [showRecordForm, setShowRecordForm] = useState(false);
-  const [menuOpen, setMenuOpen] = useState<string | null>(null);
+  
 
   // Sale form state
   const [saleCategory, setSaleCategory] = useState("");
@@ -81,7 +82,6 @@ export default function Sales() {
     }
     deleteSale.mutate(s.id);
     setDrawerSale(null);
-    setMenuOpen(null);
   };
 
   const categories = [...new Set(products.map(p => p.category))];
@@ -183,18 +183,17 @@ export default function Sales() {
                   <td className="px-4 py-2.5">
                     <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${s.payment_method === "Cash" ? "bg-success/10 text-success" : s.payment_method === "Card" ? "bg-info/10 text-info" : "bg-warning/10 text-warning"}`}>{s.payment_method}</span>
                   </td>
-                  <td className="px-4 py-2.5 relative" onClick={(e) => e.stopPropagation()}>
-                    <button onClick={() => setMenuOpen(menuOpen === s.id ? null : s.id)} className="p-1 rounded hover:bg-accent transition-colors"><MoreHorizontal className="w-4 h-4 text-muted-foreground" /></button>
-                    {menuOpen === s.id && (
-                      <>
-                        <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(null)} />
-                        <div className="absolute right-0 top-8 z-50 w-36 rounded-lg border border-border bg-popover text-popover-foreground modal-shadow py-1 animate-fade-in">
-                          <button onClick={() => handleDelete(s)} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-destructive hover:bg-accent transition-colors">
-                            <Trash2 className="w-3.5 h-3.5" /> Delete
-                          </button>
-                        </div>
-                      </>
-                    )}
+                  <td className="px-4 py-2.5" onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <button className="p-1 rounded hover:bg-accent transition-colors"><MoreHorizontal className="w-4 h-4 text-muted-foreground" /></button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-36">
+                        <DropdownMenuItem onClick={() => handleDelete(s)} className="text-destructive focus:text-destructive">
+                          <Trash2 className="w-3.5 h-3.5 mr-2" /> Delete
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </td>
                 </tr>
               ))}

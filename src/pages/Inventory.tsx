@@ -3,6 +3,7 @@ import {
   Search, Plus, FileDown, MoreHorizontal, Pencil, Trash2, Grid3X3, List,
   ChevronLeft, ChevronRight,
 } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useProducts, useDeleteProduct, useUpdateProduct, type Product } from "@/hooks/useProducts";
 import { formatETB, formatDate } from "@/data/mockData";
 import DetailDrawer from "@/components/shared/DetailDrawer";
@@ -29,7 +30,7 @@ export default function Inventory() {
   const [drawerProduct, setDrawerProduct] = useState<Product | null>(null);
   const [showAddProduct, setShowAddProduct] = useState(false);
   const [editProduct, setEditProduct] = useState<Product | null>(null);
-  const [menuOpen, setMenuOpen] = useState<string | null>(null);
+  
 
   // Edit form state
   const [editName, setEditName] = useState("");
@@ -67,7 +68,6 @@ export default function Inventory() {
     }
     deleteProduct.mutate(p.id);
     setDrawerProduct(null);
-    setMenuOpen(null);
   };
 
   const openEdit = (p: Product) => {
@@ -76,7 +76,6 @@ export default function Inventory() {
     setEditQty(p.qty_in_stock);
     setEditPrice(Number(p.buying_price));
     setEditDesc(p.description || "");
-    setMenuOpen(null);
     setDrawerProduct(null);
   };
 
@@ -157,21 +156,20 @@ export default function Inventory() {
                     <td className="px-4 py-2.5 text-right">{stockBadge(p.qty_in_stock)}</td>
                     <td className="px-4 py-2.5 text-right">{formatETB(Number(p.buying_price))}</td>
                     <td className="px-4 py-2.5 text-muted-foreground text-xs">{formatDate(p.date_of_entry)}</td>
-                    <td className="px-4 py-2.5 relative" onClick={(e) => e.stopPropagation()}>
-                      <button onClick={() => setMenuOpen(menuOpen === p.id ? null : p.id)} className="p-1 rounded hover:bg-accent transition-colors"><MoreHorizontal className="w-4 h-4 text-muted-foreground" /></button>
-                      {menuOpen === p.id && (
-                        <>
-                          <div className="fixed inset-0 z-40" onClick={() => setMenuOpen(null)} />
-                          <div className="absolute right-0 top-8 z-50 w-36 rounded-lg border border-border bg-popover text-popover-foreground modal-shadow py-1 animate-fade-in">
-                            <button onClick={() => openEdit(p)} className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-accent transition-colors">
-                              <Pencil className="w-3.5 h-3.5" /> Edit
-                            </button>
-                            <button onClick={() => handleDelete(p)} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-destructive hover:bg-accent transition-colors">
-                              <Trash2 className="w-3.5 h-3.5" /> Delete
-                            </button>
-                          </div>
-                        </>
-                      )}
+                    <td className="px-4 py-2.5" onClick={(e) => e.stopPropagation()}>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <button className="p-1 rounded hover:bg-accent transition-colors"><MoreHorizontal className="w-4 h-4 text-muted-foreground" /></button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-36">
+                          <DropdownMenuItem onClick={() => openEdit(p)}>
+                            <Pencil className="w-3.5 h-3.5 mr-2" /> Edit
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleDelete(p)} className="text-destructive focus:text-destructive">
+                            <Trash2 className="w-3.5 h-3.5 mr-2" /> Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </td>
                   </tr>
                 ))}
