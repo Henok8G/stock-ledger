@@ -156,7 +156,7 @@ export default function Sales() {
         </button>
       </div>
 
-      <div className="rounded-lg border border-border bg-card card-shadow overflow-hidden">
+      <div className="rounded-lg border border-border bg-card card-shadow overflow-visible">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
