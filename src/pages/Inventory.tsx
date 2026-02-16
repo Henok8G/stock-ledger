@@ -14,7 +14,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 const categories = ["All", "Laptop", "Mouse", "Keyboard", "Mic", "Accessory", "Storage", "Peripheral", "Misc"];
 const brands = ["All", "HP", "Lenovo", "Dell", "Asus", "Chromebook", "Logitech", "Blue", "Seagate", "SanDisk", "Rain Design"];
-const stockFilters = ["All", "In Stock", "Low Stock", "Out of Stock"];
+
 
 export default function Inventory() {
   const { data: products = [], isLoading } = useProducts();
@@ -25,7 +25,7 @@ export default function Inventory() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [brandFilter, setBrandFilter] = useState("All");
-  const [stockFilter, setStockFilter] = useState("All");
+  
   const [viewMode, setViewMode] = useState<"table" | "grid">("table");
   const [drawerProduct, setDrawerProduct] = useState<Product | null>(null);
   const [showAddProduct, setShowAddProduct] = useState(false);
@@ -38,27 +38,19 @@ export default function Inventory() {
   const [editPrice, setEditPrice] = useState(0);
   const [editDesc, setEditDesc] = useState("");
 
+  // Only show products that are still in stock (sold-out items disappear)
   const filtered = products.filter((p) => {
+    if (p.qty_in_stock <= 0) return false;
     if (search && !`${p.name} ${p.sku} ${p.brand}`.toLowerCase().includes(search.toLowerCase())) return false;
     if (categoryFilter !== "All" && p.category !== categoryFilter) return false;
     if (brandFilter !== "All" && p.brand !== brandFilter) return false;
-    if (stockFilter === "In Stock" && p.qty_in_stock <= 3) return false;
-    if (stockFilter === "Low Stock" && (p.qty_in_stock === 0 || p.qty_in_stock > 3)) return false;
-    if (stockFilter === "Out of Stock" && p.qty_in_stock !== 0) return false;
-    // Hide out-of-stock products unless explicitly filtering for them
-    if (stockFilter !== "Out of Stock" && p.qty_in_stock === 0) return false;
     return true;
   });
 
-  const stockBadge = (qty: number) => {
-    if (qty === 0) return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-destructive/10 text-destructive">Out of stock</span>;
-    if (qty <= 3) return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-warning/10 text-warning">Low ({qty})</span>;
-    return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-success/10 text-success">{qty} in stock</span>;
-  };
 
   const handleExport = () => {
-    const headers = ["Name", "Brand", "Category", "Stock", "Buying Price", "Date Added"];
-    const rows = filtered.map(p => [p.name, p.brand, p.category, p.qty_in_stock, p.buying_price, p.date_of_entry]);
+    const headers = ["Name", "Brand", "Category", "Buying Price", "Date Added"];
+    const rows = filtered.map(p => [p.name, p.brand, p.category, p.buying_price, p.date_of_entry]);
     exportToCsv("inventory.csv", headers, rows);
     toast({ title: "Exported", description: `${filtered.length} products exported to CSV.` });
   };
@@ -110,9 +102,6 @@ export default function Inventory() {
           {brands.map((b) => <option key={b} value={b}>{b === "All" ? "All Brands" : b}</option>)}
         </select>
 
-        <select value={stockFilter} onChange={(e) => setStockFilter(e.target.value)} className="px-3 py-1.5 rounded-md border border-border bg-background text-sm text-foreground">
-          {stockFilters.map((s) => <option key={s} value={s}>{s}</option>)}
-        </select>
 
         <div className="flex-1" />
 
@@ -142,7 +131,6 @@ export default function Inventory() {
                   <th className="text-left px-4 py-2 font-medium text-muted-foreground">SKU</th>
                   <th className="text-left px-4 py-2 font-medium text-muted-foreground">Brand</th>
                   <th className="text-left px-4 py-2 font-medium text-muted-foreground">Category</th>
-                  <th className="text-right px-4 py-2 font-medium text-muted-foreground">Stock</th>
                   <th className="text-right px-4 py-2 font-medium text-muted-foreground">Buying Price</th>
                   <th className="text-left px-4 py-2 font-medium text-muted-foreground">Date Added</th>
                   <th className="w-12 px-4 py-2"></th>
@@ -155,7 +143,6 @@ export default function Inventory() {
                     <td className="px-4 py-2.5 text-muted-foreground font-mono text-xs">{p.sku}</td>
                     <td className="px-4 py-2.5 text-muted-foreground">{p.brand}</td>
                     <td className="px-4 py-2.5"><span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">{p.category}</span></td>
-                    <td className="px-4 py-2.5 text-right">{stockBadge(p.qty_in_stock)}</td>
                     <td className="px-4 py-2.5 text-right">{formatETB(Number(p.buying_price))}</td>
                     <td className="px-4 py-2.5 text-muted-foreground text-xs">{formatDate(p.date_of_entry)}</td>
                     <td className="px-4 py-2.5" onClick={(e) => e.stopPropagation()}>
@@ -185,7 +172,6 @@ export default function Inventory() {
             <div key={p.id} onClick={() => setDrawerProduct(p)} className="rounded-lg border border-border bg-card p-4 card-shadow hover:border-primary/30 cursor-pointer transition-colors" role="button">
               <div className="flex items-start justify-between mb-2">
                 <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">{p.category}</span>
-                {stockBadge(p.qty_in_stock)}
               </div>
               <h4 className="font-medium text-foreground mb-0.5 text-sm">{p.name}</h4>
               <p className="text-xs text-muted-foreground mb-3">{p.brand}</p>
@@ -206,7 +192,6 @@ export default function Inventory() {
               <div><span className="text-muted-foreground">SKU</span><div className="font-medium font-mono text-xs">{drawerProduct.sku}</div></div>
               <div><span className="text-muted-foreground">Category</span><div className="font-medium">{drawerProduct.category}</div></div>
               <div><span className="text-muted-foreground">Brand</span><div className="font-medium">{drawerProduct.brand}</div></div>
-              <div><span className="text-muted-foreground">Stock</span><div className="font-medium">{drawerProduct.qty_in_stock}</div></div>
               <div><span className="text-muted-foreground">Buying Price</span><div className="font-medium">{formatETB(Number(drawerProduct.buying_price))}</div></div>
             </div>
             <div className="h-px bg-border" />

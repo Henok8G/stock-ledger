@@ -1,12 +1,13 @@
 import { useState } from "react";
 import {
-  Package, ShoppingCart, Download, TrendingUp, Wallet,
-  AlertTriangle, ArrowUpRight, ArrowDownRight, Plus, FileDown, Pencil,
+  Package, ShoppingCart, Download, TrendingUp,
+  Plus, FileDown, Pencil,
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, PieChart, Pie, Cell,
 } from "recharts";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useProducts } from "@/hooks/useProducts";
 import { useSales } from "@/hooks/useSales";
 import { useImports } from "@/hooks/useImports";
@@ -31,22 +32,17 @@ export default function Dashboard() {
   const [showAddImport, setShowAddImport] = useState(false);
   const navigate = useNavigate();
 
-  const totalStock = products.reduce((s, p) => s + p.qty_in_stock, 0);
   const totalSold = sales.reduce((s, r) => s + r.qty, 0);
   const totalImported = imports.reduce((s, r) => s + r.import_line_items.reduce((a, l) => a + l.qty, 0), 0);
   const totalProfit = sales.reduce((s, r) => s + Number(r.profit), 0);
-  const inventoryValue = products.reduce((s, p) => s + Number(p.buying_price) * p.qty_in_stock, 0);
+  const activeProducts = products.filter((p) => p.qty_in_stock > 0).length;
 
   const kpis = [
-    { label: "Total Items in Stock", value: totalStock, icon: Package, format: (v: number) => v.toLocaleString() },
+    { label: "Active Products", value: activeProducts, icon: Package, format: (v: number) => v.toLocaleString() },
     { label: "Items Sold", value: totalSold, icon: ShoppingCart, format: (v: number) => v.toLocaleString() },
     { label: "Items Imported", value: totalImported, icon: Download, format: (v: number) => v.toLocaleString() },
     { label: "Total Profit", value: totalProfit, icon: TrendingUp, format: (v: number) => formatETB(v) },
-    { label: "Inventory Value", value: inventoryValue, icon: Wallet, format: (v: number) => formatETB(v) },
   ];
-
-  const lowStockItems = products.filter((p) => p.qty_in_stock > 0 && p.qty_in_stock <= 3);
-  const outOfStock = products.filter((p) => p.qty_in_stock === 0);
 
   // Units sold by category
   const soldByCategory = sales.reduce((acc, s) => {
@@ -72,7 +68,7 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 max-w-[1400px] mx-auto">
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {kpis.map((kpi) => (
           <div key={kpi.label} className="kpi-gradient rounded-lg border border-border p-4 card-shadow flex flex-col gap-1">
             <div className="flex items-center justify-between">
@@ -150,24 +146,6 @@ export default function Dashboard() {
         </div>
 
         <div className="space-y-4">
-          <div className="rounded-lg border border-border bg-card p-4 card-shadow space-y-3">
-            <h4 className="font-medium text-foreground">Stock Summary</h4>
-            <div className="grid grid-cols-3 gap-2">
-              <div className="text-center p-2 rounded-md bg-accent">
-                <div className="text-lg font-semibold text-foreground">{products.filter((p) => p.qty_in_stock > 3).length}</div>
-                <div className="text-xs text-muted-foreground">In Stock</div>
-              </div>
-              <div className="text-center p-2 rounded-md bg-warning/10">
-                <div className="text-lg font-semibold text-warning">{lowStockItems.length}</div>
-                <div className="text-xs text-muted-foreground">Low Stock</div>
-              </div>
-              <div className="text-center p-2 rounded-md bg-destructive/10">
-                <div className="text-lg font-semibold text-destructive">{outOfStock.length}</div>
-                <div className="text-xs text-muted-foreground">Out of Stock</div>
-              </div>
-            </div>
-          </div>
-
           {stockByCategory.length > 0 && (
             <div className="rounded-lg border border-border bg-card p-4 card-shadow">
               <h4 className="font-medium text-foreground mb-3">Stock by Category</h4>
@@ -191,31 +169,6 @@ export default function Dashboard() {
               </div>
             </div>
           )}
-
-          <div className="rounded-lg border border-border bg-card p-4 card-shadow">
-            <h4 className="font-medium text-foreground mb-3 flex items-center gap-2">
-              <AlertTriangle className="w-4 h-4 text-warning" /> Alerts
-            </h4>
-            <div className="space-y-2 text-sm">
-              {lowStockItems.map((p) => (
-                <div key={p.id} className="flex items-center gap-2 text-warning">
-                  <span className="w-1.5 h-1.5 rounded-full bg-warning shrink-0" />
-                  <span className="text-foreground">{p.name}</span>
-                  <span className="ml-auto text-xs font-medium">{p.qty_in_stock} left</span>
-                </div>
-              ))}
-              {outOfStock.map((p) => (
-                <div key={p.id} className="flex items-center gap-2 text-destructive">
-                  <span className="w-1.5 h-1.5 rounded-full bg-destructive shrink-0" />
-                  <span className="text-foreground">{p.name}</span>
-                  <span className="ml-auto text-xs font-medium">Out of stock</span>
-                </div>
-              ))}
-              {lowStockItems.length === 0 && outOfStock.length === 0 && (
-                <p className="text-muted-foreground">No alerts.</p>
-              )}
-            </div>
-          </div>
 
           <div className="rounded-lg border border-border bg-card p-4 card-shadow">
             <h4 className="font-medium text-foreground mb-3">Quick Actions</h4>
