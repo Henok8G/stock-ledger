@@ -3,7 +3,7 @@ import { Search, FileDown, ShoppingCart, MoreHorizontal, Trash2 } from "lucide-r
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useSales, useRecordSale, useDeleteSale, type SaleRecord } from "@/hooks/useSales";
 import { useProducts } from "@/hooks/useProducts";
-import { formatETB, formatDateTime, relativeTime } from "@/data/mockData";
+import { formatETB, formatDateTime } from "@/data/mockData";
 import DetailDrawer from "@/components/shared/DetailDrawer";
 import { exportToCsv } from "@/lib/exportCsv";
 import { toast } from "@/hooks/use-toast";
@@ -174,7 +174,7 @@ export default function Sales() {
             <tbody>
               {filtered.map((s) => (
                 <tr key={s.id} onClick={() => setDrawerSale(s)} className="border-b border-border last:border-0 hover:bg-accent/30 cursor-pointer transition-colors" role="button">
-                  <td className="px-4 py-2.5 text-xs text-muted-foreground">{formatDateTime(s.date)}<br /><span className="text-muted-foreground/60">{relativeTime(s.date)}</span></td>
+                  <td className="px-4 py-2.5 text-xs text-muted-foreground">{formatDateTime(s.date)}</td>
                   <td className="px-4 py-2.5 font-medium text-foreground">{s.product_name}</td>
                   <td className="px-4 py-2.5 text-right">{s.qty}</td>
                   <td className="px-4 py-2.5 text-right">{formatETB(Number(s.unit_selling_price) * s.qty)}</td>
