@@ -45,6 +45,8 @@ export default function Inventory() {
     if (stockFilter === "In Stock" && p.qty_in_stock <= 3) return false;
     if (stockFilter === "Low Stock" && (p.qty_in_stock === 0 || p.qty_in_stock > 3)) return false;
     if (stockFilter === "Out of Stock" && p.qty_in_stock !== 0) return false;
+    // Hide out-of-stock products unless explicitly filtering for them
+    if (stockFilter !== "Out of Stock" && p.qty_in_stock === 0) return false;
     return true;
   });
 
