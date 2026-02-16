@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Search, Plus, FileDown, MoreHorizontal, Trash2 } from "lucide-react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { useImports, useDeleteImport, type ImportRecord } from "@/hooks/useImports";
-import { formatETB, formatDateTime, relativeTime } from "@/data/mockData";
+import { formatETB, formatDateTime } from "@/data/mockData";
 import DetailDrawer from "@/components/shared/DetailDrawer";
 import AddImportModal from "@/components/shared/AddImportModal";
 import { exportToCsv } from "@/lib/exportCsv";
@@ -82,7 +82,7 @@ export default function Imported() {
                 r.import_line_items.map((line, li) => (
                   <tr key={`${r.id}-${li}`} onClick={() => setDrawerImport(r)} className="border-b border-border last:border-0 hover:bg-accent/30 cursor-pointer transition-colors" role="button">
                     <td className="px-4 py-2.5 text-xs text-muted-foreground">
-                      {li === 0 && <>{formatDateTime(r.date)}<br /><span className="text-muted-foreground/60">{relativeTime(r.date)}</span></>}
+                      {li === 0 && formatDateTime(r.date)}
                     </td>
                     <td className="px-4 py-2.5 font-medium text-foreground">{line.product_name}</td>
                     <td className="px-4 py-2.5 text-muted-foreground">{line.brand}</td>

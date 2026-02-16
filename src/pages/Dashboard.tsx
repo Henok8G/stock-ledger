@@ -10,7 +10,7 @@ import {
 import { useProducts } from "@/hooks/useProducts";
 import { useSales } from "@/hooks/useSales";
 import { useImports } from "@/hooks/useImports";
-import { formatETB, formatDateTime, relativeTime } from "@/data/mockData";
+import { formatETB, formatDateTime } from "@/data/mockData";
 import DetailDrawer from "@/components/shared/DetailDrawer";
 import AddImportModal from "@/components/shared/AddImportModal";
 import { useNavigate } from "react-router-dom";
