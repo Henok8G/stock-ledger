@@ -15,7 +15,7 @@ export default function SettingsPage() {
   const { data: sales = [] } = useSales();
   const { data: imports = [] } = useImports();
   const [fullName, setFullName] = useState(profile?.full_name || "");
-  const [threshold, setThreshold] = useState(3);
+  const [threshold, setThreshold] = useState(1);
   const [saving, setSaving] = useState(false);
 
   const handleSaveProfile = async () => {
@@ -128,7 +128,7 @@ export default function SettingsPage() {
           </div>
           <div className="flex items-center justify-between p-2 rounded-md bg-accent/50">
             <span className="font-medium">Manager</span>
-            <span className="text-xs text-muted-foreground">Add, edit, import, sell — no void/delete</span>
+            <span className="text-xs text-muted-foreground">Add & import products — no selling, no editing</span>
           </div>
         </div>
       </div>
