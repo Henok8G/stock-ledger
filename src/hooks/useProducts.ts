@@ -31,6 +31,8 @@ export function useAddProduct() {
       buying_price: number;
       date_of_entry: string;
     }) => {
+      const userId = (await supabase.auth.getUser()).data.user?.id;
+
       // Generate SKU
       const { data: sku, error: skuErr } = await supabase.rpc("generate_sku", {
         p_category: product.category,
@@ -50,15 +52,40 @@ export function useAddProduct() {
           qty_in_stock: product.qty_in_stock,
           buying_price: product.buying_price,
           date_of_entry: product.date_of_entry,
-          created_by: (await supabase.auth.getUser()).data.user?.id,
+          created_by: userId,
         })
         .select()
         .single();
       if (error) throw error;
+
+      // Also create a corresponding import record so it appears in the Imported page
+      const { data: importRec, error: impErr } = await supabase
+        .from("import_records")
+        .insert({
+          supplier: "Direct Entry",
+          date: product.date_of_entry,
+          entered_by: userId,
+        })
+        .select()
+        .single();
+
+      if (!impErr && importRec) {
+        await supabase.from("import_line_items").insert({
+          import_id: importRec.id,
+          product_name: product.name,
+          brand: product.brand,
+          category: product.category,
+          description: product.description,
+          qty: product.qty_in_stock,
+          unit_buying_price: product.buying_price,
+        });
+      }
+
       return data;
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["products"] });
+      qc.invalidateQueries({ queryKey: ["imports"] });
       toast({ title: "Product Added", description: "Product has been saved." });
     },
     onError: (err: Error) => {
@@ -93,7 +120,8 @@ export function useDeleteProduct() {
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["products"] });
-      toast({ title: "Deleted", description: "Product deleted." });
+      qc.invalidateQueries({ queryKey: ["sales"] });
+      toast({ title: "Deleted", description: "Product deleted. Sales history preserved." });
     },
     onError: (err: Error) => {
       toast({ title: "Error", description: err.message, variant: "destructive" });
