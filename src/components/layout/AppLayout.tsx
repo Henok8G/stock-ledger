@@ -109,10 +109,6 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
                   <div className="absolute right-0 top-10 z-50 w-48 rounded-lg border border-border bg-popover text-popover-foreground modal-shadow py-1 animate-fade-in">
-                    <button onClick={() => { setUserMenuOpen(false); navigate("/settings"); }} className="flex items-center gap-2 w-full px-3 py-2 text-sm hover:bg-accent transition-colors">
-                      <User className="w-4 h-4" /> Profile
-                    </button>
-                    <div className="h-px bg-border my-1" />
                     <button onClick={() => { setUserMenuOpen(false); signOut(); }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-destructive hover:bg-accent transition-colors">
                       <LogOut className="w-4 h-4" /> Log Out
                     </button>
