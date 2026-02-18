@@ -1,73 +1,96 @@
-# Welcome to your Lovable project
+# 📦 Inventory & Sales Management System
 
-## Project info
+A modern inventory and sales management system built for small and medium retail/wholesale businesses.  
+Designed to track products from import to sale, monitor stock levels, and calculate profit automatically (ETB supported).
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+---
 
-## How can I edit this code?
+## 🚀 Project Info
 
-There are several ways of editing your application.
+- 🔗 **Repository:** https://github.com/Henok8G/inventory-sales-system
+  
+---
 
-**Use Lovable**
+## 🎯 Purpose
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+This system helps business owners:
 
-Changes made via Lovable will be committed automatically to this repo.
+- Track imported products
+- Monitor live inventory
+- Record sales with automatic stock deduction
+- Calculate profit instantly
+- Analyze performance through dashboards
+- Export business data as CSV
 
-**Use your preferred IDE**
+Built especially for small businesses operating in Ethiopia and similar markets.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🔁 Core Workflow
 
-Follow these steps:
+### 1️⃣ Import Products
+- Add supplier details
+- Enter quantity and buying price
+- Auto-generate SKU
+- Automatically update stock
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### 2️⃣ Manage Inventory
+- View active products
+- Sold-out items auto-hide
+- Filter by category
+- Monitor low stock
+- Export inventory as CSV
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### 3️⃣ Record Sales
+- Enter selling price
+- Select payment method
+- Automatic:
+  - Stock deduction
+  - Profit calculation
+- Sales history stored
 
-# Step 3: Install the necessary dependencies.
-npm i
+### 4️⃣ Analyze Performance
+Dashboard includes:
+- Total active products
+- Items sold
+- Items imported
+- Total profit
+- Sales by category chart
+- Stock distribution chart
+- Recent sales table
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+### 5️⃣ Role-Based Access
 
-**Edit a file directly in GitHub**
+| Role    | Permissions |
+|----------|------------|
+| Owner   | Full access (import, sell, manage, delete) |
+| Manager | Can import & view, cannot record sales |
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+---
 
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
+## 🛠 Tech Stack
 
 - Vite
-- TypeScript
 - React
-- shadcn-ui
+- TypeScript
 - Tailwind CSS
+- shadcn-ui
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## 💻 How To Run Locally
 
-## Can I connect a custom domain to my Lovable project?
+Make sure you have **Node.js & npm** installed.
 
-Yes, you can!
+```bash
+# Clone the repository
+git clone https://github.com/Henok8G/inventory-sales-system.git
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+# Navigate into project
+cd inventory-sales-system
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
