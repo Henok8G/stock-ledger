@@ -151,9 +151,11 @@ export default function Sales() {
           <FileDown className="w-4 h-4" /> Export
         </button>
 
-        <button onClick={() => setShowRecordForm((o) => !o)} className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-success text-success-foreground text-sm font-medium hover:opacity-90 transition-opacity">
-          <ShoppingCart className="w-4 h-4" /> {showRecordForm ? "Hide Form" : "Record Sale"}
-        </button>
+        {role === "owner" && (
+          <button onClick={() => setShowRecordForm((o) => !o)} className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-success text-success-foreground text-sm font-medium hover:opacity-90 transition-opacity">
+            <ShoppingCart className="w-4 h-4" /> {showRecordForm ? "Hide Form" : "Record Sale"}
+          </button>
+        )}
       </div>
 
       <div className="rounded-lg border border-border bg-card card-shadow overflow-visible">
