@@ -17,6 +17,7 @@ import AddImportModal from "@/components/shared/AddImportModal";
 import { useNavigate } from "react-router-dom";
 import { exportToCsv } from "@/lib/exportCsv";
 import type { SaleRecord } from "@/hooks/useSales";
+import { useAuth } from "@/hooks/useAuth";
 
 const PIE_COLORS = [
   "hsl(222, 84%, 11%)", "hsl(210, 92%, 45%)", "hsl(142, 60%, 40%)",
@@ -31,6 +32,7 @@ export default function Dashboard() {
   const [drawerSale, setDrawerSale] = useState<SaleRecord | null>(null);
   const [showAddImport, setShowAddImport] = useState(false);
   const navigate = useNavigate();
+  const { role } = useAuth();
 
   const totalSold = sales.reduce((s, r) => s + r.qty, 0);
   const totalImported = imports.reduce((s, r) => s + r.import_line_items.reduce((a, l) => a + l.qty, 0), 0);
@@ -176,9 +178,11 @@ export default function Dashboard() {
               <button onClick={() => setShowAddImport(true)} className="flex items-center gap-2 px-3 py-2 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">
                 <Plus className="w-4 h-4" /> Add Import
               </button>
-              <button onClick={() => navigate("/sales")} className="flex items-center gap-2 px-3 py-2 rounded-md bg-success text-success-foreground text-sm font-medium hover:opacity-90 transition-opacity">
-                <ShoppingCart className="w-4 h-4" /> Record Sale
-              </button>
+              {role === "owner" && (
+                <button onClick={() => navigate("/sales")} className="flex items-center gap-2 px-3 py-2 rounded-md bg-success text-success-foreground text-sm font-medium hover:opacity-90 transition-opacity">
+                  <ShoppingCart className="w-4 h-4" /> Record Sale
+                </button>
+              )}
               <button onClick={handleExportCsv} className="flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm font-medium hover:bg-accent transition-colors">
                 <FileDown className="w-4 h-4" /> Export CSV
               </button>
