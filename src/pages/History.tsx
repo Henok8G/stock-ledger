@@ -91,7 +91,7 @@ export default function HistoryPage() {
 
       {activeTab === "Sales History" ? (
         <div className="space-y-6">
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="rounded-lg border border-border bg-card p-4 card-shadow flex items-center gap-3">
               <div className="p-2 rounded-md bg-accent"><ShoppingCart className="w-4 h-4 text-foreground" /></div>
               <div><div className="text-xs text-muted-foreground">Total Sold</div><div className="text-lg font-semibold">{totalSold}</div></div>
