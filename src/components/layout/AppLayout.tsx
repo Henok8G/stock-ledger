@@ -4,10 +4,14 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCompanySettings } from "@/hooks/useCompanySettings";
 import {
   LayoutDashboard, Package, Download, ShoppingCart, History, Settings,
-  ChevronLeft, ChevronRight, Search, Moon, Sun, User, LogOut, Menu, X,
+  ChevronLeft, ChevronRight, Search, Moon, Sun, User, LogOut, Menu, X, Bell,
 } from "lucide-react";
 import NotificationBell from "@/components/shared/NotificationBell";
 import { requestNotificationPermission, useBrowserNotifications } from "@/hooks/useBrowserNotifications";
+import {
+  AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogAction, AlertDialogCancel,
+} from "@/components/ui/alert-dialog";
 
 interface LayoutContextType {
   sidebarCollapsed: boolean;
@@ -38,6 +42,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [showNotifDialog, setShowNotifDialog] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { profile, role, signOut } = useAuth();
@@ -45,10 +50,19 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const companyName = companySettings?.company_name || "TechStock";
   const isOwner = role === "owner";
 
-  // Request browser notification permission for owners
+  // Show custom dialog to ask about notifications for owners
   useEffect(() => {
-    if (isOwner) requestNotificationPermission();
+    if (!isOwner) return;
+    if (!("Notification" in window)) return;
+    if (Notification.permission === "default") {
+      setShowNotifDialog(true);
+    }
   }, [isOwner]);
+
+  const handleAllowNotifications = async () => {
+    setShowNotifDialog(false);
+    await requestNotificationPermission();
+  };
 
   // Show OS-level notifications for owners
   useBrowserNotifications(isOwner);
@@ -66,6 +80,23 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <LayoutContext.Provider value={{ sidebarCollapsed, toggleSidebar, darkMode, toggleDarkMode }}>
+      <AlertDialog open={showNotifDialog} onOpenChange={setShowNotifDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <Bell className="h-6 w-6 text-primary" />
+            </div>
+            <AlertDialogTitle className="text-center">Enable Notifications</AlertDialogTitle>
+            <AlertDialogDescription className="text-center">
+              Get instant alerts when new products are added or imports are recorded — even when the app is in the background.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="sm:justify-center gap-2">
+            <AlertDialogCancel>Not now</AlertDialogCancel>
+            <AlertDialogAction onClick={handleAllowNotifications}>Allow notifications</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <div className="flex h-screen overflow-hidden bg-background">
         <a href="#main-content" className="skip-link">Skip to content</a>
 
