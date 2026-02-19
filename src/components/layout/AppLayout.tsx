@@ -6,6 +6,7 @@ import {
   LayoutDashboard, Package, Download, ShoppingCart, History, Settings,
   ChevronLeft, ChevronRight, Search, Moon, Sun, User, LogOut, Menu, X,
 } from "lucide-react";
+import NotificationBell from "@/components/shared/NotificationBell";
 
 interface LayoutContextType {
   sidebarCollapsed: boolean;
@@ -38,7 +39,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { profile, signOut } = useAuth();
+  const { profile, role, signOut } = useAuth();
   const { data: companySettings } = useCompanySettings();
   const companyName = companySettings?.company_name || "TechStock";
 
@@ -103,6 +104,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             <button onClick={toggleDarkMode} className="p-1.5 rounded-md hover:bg-accent transition-colors text-muted-foreground">
               {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
+
+            {role === "owner" && <NotificationBell />}
 
             <div className="relative">
               <button onClick={() => setUserMenuOpen((o) => !o)} className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-xs font-medium">
