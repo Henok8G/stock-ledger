@@ -90,7 +90,16 @@ export default function Imported() {
                     <td className="px-4 py-2.5 text-right">{line.qty}</td>
                     <td className="px-4 py-2.5 text-right">{formatETB(Number(line.unit_buying_price))}</td>
                     <td className="px-4 py-2.5 text-right font-medium">{formatETB(line.qty * Number(line.unit_buying_price))}</td>
-                    <td className="px-4 py-2.5 text-muted-foreground">{li === 0 ? r.supplier : ""}</td>
+                    <td className="px-4 py-2.5 text-muted-foreground">
+                      {li === 0 && (
+                        <div className="flex flex-col">
+                          <span>{r.supplier}</span>
+                          {r.entered_by_role && (
+                            <span className="text-xs capitalize text-muted-foreground/70">Added by {r.entered_by_role}</span>
+                          )}
+                        </div>
+                      )}
+                    </td>
                     <td className="px-4 py-2.5 relative" onClick={(e) => e.stopPropagation()}>
                       {li === 0 && (
                         <DropdownMenu>

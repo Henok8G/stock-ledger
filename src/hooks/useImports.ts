@@ -5,6 +5,7 @@ import type { Tables } from "@/integrations/supabase/types";
 
 export type ImportRecord = Tables<"import_records"> & {
   import_line_items: Tables<"import_line_items">[];
+  entered_by_role?: "owner" | "manager" | null;
 };
 
 export function useImports() {
@@ -16,7 +17,24 @@ export function useImports() {
         .select("*, import_line_items(*)")
         .order("date", { ascending: false });
       if (error) throw error;
-      return data as ImportRecord[];
+
+      // Fetch roles for all entered_by users
+      const userIds = [...new Set((data || []).map(r => r.entered_by).filter(Boolean))] as string[];
+      let roleMap: Record<string, "owner" | "manager"> = {};
+      if (userIds.length > 0) {
+        const { data: roles } = await supabase
+          .from("user_roles")
+          .select("user_id, role")
+          .in("user_id", userIds);
+        if (roles) {
+          roleMap = Object.fromEntries(roles.map(r => [r.user_id, r.role]));
+        }
+      }
+
+      return (data || []).map(r => ({
+        ...r,
+        entered_by_role: r.entered_by ? (roleMap[r.entered_by] ?? null) : null,
+      })) as ImportRecord[];
     },
   });
 }
