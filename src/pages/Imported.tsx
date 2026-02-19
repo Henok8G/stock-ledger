@@ -66,7 +66,7 @@ export default function Imported() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-accent/50">
-                <th className="text-left px-4 py-2 font-medium text-muted-foreground">Date & Time</th>
+                <th className="text-left px-4 py-2 font-medium text-muted-foreground">Date</th>
                 <th className="text-left px-4 py-2 font-medium text-muted-foreground">Product(s)</th>
                 <th className="text-left px-4 py-2 font-medium text-muted-foreground">Brand</th>
                 <th className="text-left px-4 py-2 font-medium text-muted-foreground">Category</th>
@@ -119,7 +119,7 @@ export default function Imported() {
       <DetailDrawer open={!!drawerImport} onClose={() => setDrawerImport(null)} title="Import Details">
         {drawerImport && (
           <div className="space-y-4 text-sm">
-            <div><span className="text-muted-foreground">Date & Time</span><div className="font-medium">{formatDateTime(drawerImport.date)}</div></div>
+            <div><span className="text-muted-foreground">Date</span><div className="font-medium">{formatDateTime(drawerImport.date)}</div></div>
             <div><span className="text-muted-foreground">Supplier</span><div className="font-medium">{drawerImport.supplier}</div></div>
             <div className="h-px bg-border" />
             <h4 className="font-medium">Line Items</h4>

@@ -195,7 +195,7 @@ export default function HistoryPage() {
                   <th className="text-right px-4 py-2 font-medium text-muted-foreground">Qty</th>
                   <th className="text-right px-4 py-2 font-medium text-muted-foreground">Unit Price</th>
                   <th className="text-right px-4 py-2 font-medium text-muted-foreground">Total</th>
-                  <th className="text-left px-4 py-2 font-medium text-muted-foreground">Date & Time</th>
+                  <th className="text-left px-4 py-2 font-medium text-muted-foreground">Date</th>
                 </tr>
               </thead>
               <tbody>
