@@ -128,7 +128,6 @@ export default function Inventory() {
               <thead>
                 <tr className="border-b border-border bg-accent/50">
                   <th className="text-left px-4 py-2 font-medium text-muted-foreground">Item Name</th>
-                  <th className="text-left px-4 py-2 font-medium text-muted-foreground">SKU</th>
                   <th className="text-left px-4 py-2 font-medium text-muted-foreground">Brand</th>
                   <th className="text-left px-4 py-2 font-medium text-muted-foreground">Category</th>
                   <th className="text-right px-4 py-2 font-medium text-muted-foreground">Buying Price</th>
@@ -140,7 +139,6 @@ export default function Inventory() {
                 {filtered.map((p) => (
                   <tr key={p.id} onClick={() => setDrawerProduct(p)} className="border-b border-border last:border-0 hover:bg-accent/30 cursor-pointer transition-colors" role="button">
                     <td className="px-4 py-2.5 font-medium text-foreground">{p.name}</td>
-                    <td className="px-4 py-2.5 text-muted-foreground font-mono text-xs">{p.sku}</td>
                     <td className="px-4 py-2.5 text-muted-foreground">{p.brand}</td>
                     <td className="px-4 py-2.5"><span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">{p.category}</span></td>
                     <td className="px-4 py-2.5 text-right">{formatETB(Number(p.buying_price))}</td>
@@ -177,7 +175,6 @@ export default function Inventory() {
               <p className="text-xs text-muted-foreground mb-3">{p.brand}</p>
               <div className="flex items-center justify-between text-sm">
                 <span className="font-medium">{formatETB(Number(p.buying_price))}</span>
-                <span className="text-xs text-muted-foreground">{p.sku}</span>
               </div>
             </div>
           ))}

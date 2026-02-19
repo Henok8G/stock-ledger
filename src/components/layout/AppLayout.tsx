@@ -1,6 +1,7 @@
 import { useState, createContext, useContext, useCallback, type ReactNode } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useCompanySettings } from "@/hooks/useCompanySettings";
 import {
   LayoutDashboard, Package, Download, ShoppingCart, History, Settings,
   ChevronLeft, ChevronRight, Search, Moon, Sun, User, LogOut, Menu, X,
@@ -38,6 +39,8 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { profile, signOut } = useAuth();
+  const { data: companySettings } = useCompanySettings();
+  const companyName = companySettings?.company_name || "TechStock";
 
   const toggleSidebar = useCallback(() => setSidebarCollapsed((c) => !c), []);
   const toggleDarkMode = useCallback(() => {
@@ -64,7 +67,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
             <div className="flex items-center justify-center w-8 h-8 rounded-md bg-sidebar-accent">
               <Package className="w-4 h-4 text-sidebar-foreground" />
             </div>
-            {!sidebarCollapsed && <span className="text-sm font-semibold truncate">TechStock</span>}
+            {!sidebarCollapsed && <span className="text-sm font-semibold truncate">{companyName}</span>}
           </div>
 
           <nav className="flex-1 py-2 space-y-0.5 px-2">

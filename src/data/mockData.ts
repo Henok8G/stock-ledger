@@ -133,8 +133,7 @@ export function formatDate(dateStr: string): string {
 
 export function formatDateTime(dateStr: string): string {
   const d = new Date(dateStr);
-  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) +
-    " — " + d.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
 }
 
 export function relativeTime(dateStr: string): string {

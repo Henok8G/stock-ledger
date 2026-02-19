@@ -1,33 +1,61 @@
-import { useState } from "react";
-import { User, Building2, Bell, Shield, Database } from "lucide-react";
+import { useState, useEffect } from "react";
+import { User, Building2, Bell, Shield, Database, Users } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useProducts } from "@/hooks/useProducts";
 import { useSales } from "@/hooks/useSales";
 import { useImports } from "@/hooks/useImports";
+import { useCompanySettings, useUpdateCompanyName } from "@/hooks/useCompanySettings";
+import { useTeamMembers, useUpdateUserRole } from "@/hooks/useTeamMembers";
 import { exportToCsv, exportToPdf } from "@/lib/exportCsv";
 import { formatETB, formatDateTime } from "@/data/mockData";
 import { toast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
 export default function SettingsPage() {
-  const { profile, role, signOut } = useAuth();
+  const { profile, role, user, signOut } = useAuth();
   const { data: products = [] } = useProducts();
   const { data: sales = [] } = useSales();
   const { data: imports = [] } = useImports();
+  const { data: companySettings } = useCompanySettings();
+  const updateCompanyName = useUpdateCompanyName();
+  const { data: teamMembers = [] } = useTeamMembers();
+  const updateUserRole = useUpdateUserRole();
+
   const [fullName, setFullName] = useState(profile?.full_name || "");
   const [threshold, setThreshold] = useState(1);
   const [saving, setSaving] = useState(false);
+  const [companyName, setCompanyName] = useState("");
+
+  useEffect(() => {
+    if (profile?.full_name) setFullName(profile.full_name);
+  }, [profile?.full_name]);
+
+  useEffect(() => {
+    if (companySettings?.company_name) setCompanyName(companySettings.company_name);
+  }, [companySettings?.company_name]);
 
   const handleSaveProfile = async () => {
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
       .update({ full_name: fullName })
-      .eq("user_id", (await supabase.auth.getUser()).data.user?.id || "");
+      .eq("user_id", user?.id || "");
     if (error) toast({ title: "Error", description: error.message, variant: "destructive" });
     else toast({ title: "Saved", description: "Profile updated." });
     setSaving(false);
   };
+
+  const handleSaveCompany = () => {
+    if (!companySettings?.id) return;
+    updateCompanyName.mutate({ id: companySettings.id, company_name: companyName });
+  };
+
+  const handleRoleChange = (userId: string, newRole: "owner" | "manager") => {
+    updateUserRole.mutate({ user_id: userId, role: newRole });
+  };
+
+  // Only show other team members (not the current user)
+  const otherMembers = teamMembers.filter(m => m.user_id !== user?.id);
 
   const handleExportCsv = () => {
     const headers = ["Name", "Brand", "Category", "Stock", "Buying Price"];
@@ -39,7 +67,7 @@ export default function SettingsPage() {
   const handleExportPdf = () => {
     const headers = ["Name", "Brand", "Category", "Stock", "Buying Price"];
     const rows = products.map(p => [p.name, p.brand, p.category, p.qty_in_stock, formatETB(Number(p.buying_price))]);
-    exportToPdf("TechStock Inventory Report", headers, rows);
+    exportToPdf("Inventory Report", headers, rows);
   };
 
   const handleMonthlyReport = () => {
@@ -66,6 +94,7 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6 max-w-[800px] mx-auto">
+      {/* Profile */}
       <div className="rounded-lg border border-border bg-card p-6 card-shadow">
         <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2"><User className="w-5 h-5" /> Profile</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -89,20 +118,27 @@ export default function SettingsPage() {
         </div>
       </div>
 
+      {/* Company */}
       <div className="rounded-lg border border-border bg-card p-6 card-shadow">
         <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2"><Building2 className="w-5 h-5" /> Company</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="text-xs font-medium text-muted-foreground mb-1 block">Company Name</label>
-            <input type="text" defaultValue="TechStock ET" className="w-full px-3 py-1.5 rounded-md border border-border bg-background text-sm" />
+            <input type="text" value={companyName} onChange={(e) => setCompanyName(e.target.value)} className="w-full px-3 py-1.5 rounded-md border border-border bg-background text-sm" />
           </div>
           <div>
             <label className="text-xs font-medium text-muted-foreground mb-1 block">Currency</label>
             <input type="text" defaultValue="ETB (Ethiopian Birr)" disabled className="w-full px-3 py-1.5 rounded-md border border-border bg-accent text-sm text-muted-foreground" />
           </div>
+          <div className="flex items-end">
+            <button onClick={handleSaveCompany} disabled={updateCompanyName.isPending} className="px-4 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity disabled:opacity-50">
+              {updateCompanyName.isPending ? "Saving…" : "Save Company"}
+            </button>
+          </div>
         </div>
       </div>
 
+      {/* Notifications */}
       <div className="rounded-lg border border-border bg-card p-6 card-shadow">
         <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2"><Bell className="w-5 h-5" /> Notifications & Alerts</h3>
         <div className="space-y-3">
@@ -119,20 +155,51 @@ export default function SettingsPage() {
         </div>
       </div>
 
+      {/* Roles & Permissions */}
       <div className="rounded-lg border border-border bg-card p-6 card-shadow">
         <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2"><Shield className="w-5 h-5" /> Roles & Permissions</h3>
         <div className="space-y-2 text-sm">
           <div className="flex items-center justify-between p-2 rounded-md bg-accent/50">
             <span className="font-medium">Owner</span>
-            <span className="text-xs text-muted-foreground">Full access — import, sell, void, adjust, delete</span>
+            <span className="text-xs text-muted-foreground">Full access — import, sell, edit, delete, manage team</span>
           </div>
           <div className="flex items-center justify-between p-2 rounded-md bg-accent/50">
             <span className="font-medium">Manager</span>
-            <span className="text-xs text-muted-foreground">Add & import products — no selling, no editing</span>
+            <span className="text-xs text-muted-foreground">Can import & view products — no selling, editing, or deleting</span>
           </div>
         </div>
       </div>
 
+      {/* Team Management — Owner only */}
+      {role === "owner" && (
+        <div className="rounded-lg border border-border bg-card p-6 card-shadow">
+          <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2"><Users className="w-5 h-5" /> Team Members</h3>
+          {otherMembers.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No other team members yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {otherMembers.map((m) => (
+                <div key={m.user_id} className="flex items-center justify-between p-3 rounded-md border border-border bg-accent/30">
+                  <div className="min-w-0">
+                    <div className="font-medium text-sm text-foreground truncate">{m.full_name || "Unnamed"}</div>
+                    <div className="text-xs text-muted-foreground truncate">{m.email}</div>
+                  </div>
+                  <select
+                    value={m.role}
+                    onChange={(e) => handleRoleChange(m.user_id, e.target.value as "owner" | "manager")}
+                    className="px-3 py-1.5 rounded-md border border-border bg-background text-sm text-foreground ml-3 shrink-0"
+                  >
+                    <option value="manager">Manager</option>
+                    <option value="owner">Owner</option>
+                  </select>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Data & Export */}
       <div className="rounded-lg border border-border bg-card p-6 card-shadow">
         <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2"><Database className="w-5 h-5" /> Data & Export</h3>
         <div className="flex flex-wrap gap-3">

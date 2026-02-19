@@ -163,7 +163,7 @@ export default function Sales() {
           <table className="w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-accent/50">
-                <th className="text-left px-4 py-2 font-medium text-muted-foreground">Date & Time</th>
+                <th className="text-left px-4 py-2 font-medium text-muted-foreground">Date</th>
                 <th className="text-left px-4 py-2 font-medium text-muted-foreground">Item</th>
                 <th className="text-right px-4 py-2 font-medium text-muted-foreground">Qty</th>
                 <th className="text-right px-4 py-2 font-medium text-muted-foreground">Selling</th>
@@ -225,7 +225,7 @@ export default function Sales() {
               <div className="flex justify-between text-base"><span className="font-medium">Profit (ETB)</span><span className="font-semibold text-success">{formatETB(Number(drawerSale.profit))}</span></div>
             </div>
             <div className="h-px bg-border" />
-            <div><span className="text-muted-foreground">Date & Time</span><div className="font-medium">{formatDateTime(drawerSale.date)}</div></div>
+            <div><span className="text-muted-foreground">Date</span><div className="font-medium">{formatDateTime(drawerSale.date)}</div></div>
             {drawerSale.notes && <div><span className="text-muted-foreground">Notes</span><div className="font-medium">{drawerSale.notes}</div></div>}
           </div>
         )}
