@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, useCallback, type ReactNode } from "react";
+import { useState, useEffect, createContext, useContext, useCallback, type ReactNode } from "react";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useCompanySettings } from "@/hooks/useCompanySettings";
@@ -7,6 +7,7 @@ import {
   ChevronLeft, ChevronRight, Search, Moon, Sun, User, LogOut, Menu, X,
 } from "lucide-react";
 import NotificationBell from "@/components/shared/NotificationBell";
+import { requestNotificationPermission, useBrowserNotifications } from "@/hooks/useBrowserNotifications";
 
 interface LayoutContextType {
   sidebarCollapsed: boolean;
@@ -42,6 +43,15 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const { profile, role, signOut } = useAuth();
   const { data: companySettings } = useCompanySettings();
   const companyName = companySettings?.company_name || "TechStock";
+  const isOwner = role === "owner";
+
+  // Request browser notification permission for owners
+  useEffect(() => {
+    if (isOwner) requestNotificationPermission();
+  }, [isOwner]);
+
+  // Show OS-level notifications for owners
+  useBrowserNotifications(isOwner);
 
   const toggleSidebar = useCallback(() => setSidebarCollapsed((c) => !c), []);
   const toggleDarkMode = useCallback(() => {
