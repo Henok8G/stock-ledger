@@ -1,11 +1,19 @@
 import { useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-export function requestNotificationPermission() {
-  if (!("Notification" in window)) return;
+export async function requestNotificationPermission(): Promise<NotificationPermission | null> {
+  if (!("Notification" in window)) return null;
   if (Notification.permission === "default") {
-    Notification.requestPermission();
+    const result = await Notification.requestPermission();
+    if (result === "granted") {
+      new Notification("Notifications enabled 🎉", {
+        body: "You'll now receive alerts for new products and imports.",
+        icon: "/logo.png",
+      });
+    }
+    return result;
   }
+  return Notification.permission;
 }
 
 export function useBrowserNotifications(enabled: boolean) {
