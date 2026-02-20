@@ -11,6 +11,7 @@ import Imported from "./pages/Imported";
 import Sales from "./pages/Sales";
 import HistoryPage from "./pages/History";
 import SettingsPage from "./pages/Settings";
+import NotesPage from "./pages/Notes";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 
@@ -38,6 +39,7 @@ function ProtectedRoutes() {
         <Route path="/sales" element={<Sales />} />
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/settings" element={<SettingsPage />} />
+        <Route path="/notes" element={<NotesPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AppLayout>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import {
   Package, ShoppingCart, Download, TrendingUp,
-  Plus, FileDown, Pencil,
+  Plus, FileDown, Pencil, StickyNote,
 } from "lucide-react";
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -11,6 +11,7 @@ import {
 import { useProducts } from "@/hooks/useProducts";
 import { useSales } from "@/hooks/useSales";
 import { useImports } from "@/hooks/useImports";
+import { useNotes } from "@/hooks/useNotes";
 import { formatETB, formatDateTime } from "@/data/mockData";
 import DetailDrawer from "@/components/shared/DetailDrawer";
 import AddImportModal from "@/components/shared/AddImportModal";
@@ -18,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import { exportToCsv } from "@/lib/exportCsv";
 import type { SaleRecord } from "@/hooks/useSales";
 import { useAuth } from "@/hooks/useAuth";
+import { format } from "date-fns";
 
 const PIE_COLORS = [
   "hsl(222, 84%, 11%)", "hsl(210, 92%, 45%)", "hsl(142, 60%, 40%)",
@@ -29,6 +31,7 @@ export default function Dashboard() {
   const { data: products = [] } = useProducts();
   const { data: sales = [] } = useSales();
   const { data: imports = [] } = useImports();
+  const { data: notes = [] } = useNotes();
   const [drawerSale, setDrawerSale] = useState<SaleRecord | null>(null);
   const [showAddImport, setShowAddImport] = useState(false);
   const navigate = useNavigate();
@@ -189,7 +192,45 @@ export default function Dashboard() {
               <button onClick={() => navigate("/inventory")} className="flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm font-medium hover:bg-accent transition-colors">
                 <Pencil className="w-4 h-4" /> Manage Stock
               </button>
+              <button onClick={() => navigate("/notes")} className="flex items-center gap-2 px-3 py-2 rounded-md border border-border bg-background text-foreground text-sm font-medium hover:bg-accent transition-colors col-span-2">
+                <StickyNote className="w-4 h-4" /> Take Note
+              </button>
             </div>
+          </div>
+
+          {/* Recent Notes Widget */}
+          <div className="rounded-lg border border-border bg-card card-shadow overflow-hidden">
+            <div className="px-4 py-3 border-b border-border flex items-center justify-between">
+              <h4 className="font-medium text-foreground flex items-center gap-2">
+                <StickyNote className="w-4 h-4 text-muted-foreground" /> Recent Notes
+              </h4>
+              <button onClick={() => navigate("/notes")} className="text-xs text-primary hover:underline">View all</button>
+            </div>
+            <div className="divide-y divide-border">
+              {notes.length === 0 && (
+                <div className="px-4 py-5 text-center text-sm text-muted-foreground">No notes yet.</div>
+              )}
+              {notes.slice(0, 4).map((note) => (
+                <div
+                  key={note.id}
+                  onClick={() => navigate("/notes")}
+                  className="px-4 py-2.5 hover:bg-accent/30 cursor-pointer transition-colors flex items-start justify-between gap-2"
+                >
+                  <div className="min-w-0">
+                    <div className="text-sm font-medium text-foreground truncate">{note.title}</div>
+                    <div className="text-xs text-muted-foreground truncate">{note.content || "No content"}</div>
+                  </div>
+                  <span className="text-xs text-muted-foreground shrink-0">{format(new Date(note.updated_at), "MMM d")}</span>
+                </div>
+              ))}
+            </div>
+            {notes.length > 0 && (
+              <div className="px-4 py-2.5 border-t border-border bg-accent/20">
+                <button onClick={() => navigate("/notes")} className="w-full text-xs text-center text-primary hover:underline">
+                  Open Notes →
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

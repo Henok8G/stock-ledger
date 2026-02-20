@@ -3,8 +3,8 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useCompanySettings } from "@/hooks/useCompanySettings";
 import {
-  LayoutDashboard, Package, Download, ShoppingCart, History, Settings,
-  ChevronLeft, ChevronRight, Search, Moon, Sun, User, LogOut, Menu, X, Bell,
+  LayoutDashboard, Package, Download, ShoppingCart, History, Settings, StickyNote,
+  ChevronLeft, ChevronRight, Search, Moon, Sun, LogOut, Menu, X, Bell,
 } from "lucide-react";
 import NotificationBell from "@/components/shared/NotificationBell";
 import { requestNotificationPermission, useBrowserNotifications } from "@/hooks/useBrowserNotifications";
@@ -34,6 +34,7 @@ const navItems = [
   { to: "/imported", label: "Imported", icon: Download },
   { to: "/sales", label: "Sales", icon: ShoppingCart },
   { to: "/history", label: "History", icon: History },
+  { to: "/notes", label: "Notes", icon: StickyNote },
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 
