@@ -182,7 +182,7 @@ export default function Dashboard() {
                 <Plus className="w-4 h-4" /> Add Import
               </button>
               {role === "owner" && (
-                <button onClick={() => navigate("/sales")} className="flex items-center gap-2 px-3 py-2 rounded-md bg-success text-success-foreground text-sm font-medium hover:opacity-90 transition-opacity">
+                <button onClick={() => navigate("/inventory")} className="flex items-center gap-2 px-3 py-2 rounded-md bg-success text-success-foreground text-sm font-medium hover:opacity-90 transition-opacity">
                   <ShoppingCart className="w-4 h-4" /> Record Sale
                 </button>
               )}

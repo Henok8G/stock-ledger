@@ -32,7 +32,6 @@ const navItems = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
   { to: "/inventory", label: "Inventory", icon: Package },
   { to: "/imported", label: "Imported", icon: Download },
-  { to: "/sales", label: "Sales", icon: ShoppingCart },
   { to: "/history", label: "History", icon: History },
   { to: "/notes", label: "Notes", icon: StickyNote },
   { to: "/settings", label: "Settings", icon: Settings },

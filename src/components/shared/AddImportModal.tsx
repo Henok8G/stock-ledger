@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { X, Plus, Trash2 } from "lucide-react";
 import { useAddImport } from "@/hooks/useImports";
+import { useUploadProductPhotos } from "@/hooks/useProductPhotos";
+import { supabase } from "@/integrations/supabase/client";
+import PhotoUploadField from "@/components/shared/PhotoUploadField";
 
 const categories = ["Laptop", "Mouse", "Keyboard", "Mic", "Accessory", "Storage", "Peripheral", "Misc"];
 const brandsByCategory: Record<string, string[]> = {
@@ -22,10 +25,11 @@ interface LineItem {
   qty: number;
   unit_buying_price: number;
   product_name: string;
+  photos: File[];
 }
 
 const emptyLine = (): LineItem => ({
-  category: "", brand: "", customBrand: "", description: "", qty: 1, unit_buying_price: 0, product_name: "",
+  category: "", brand: "", customBrand: "", description: "", qty: 1, unit_buying_price: 0, product_name: "", photos: [],
 });
 
 interface AddImportModalProps {
@@ -38,6 +42,7 @@ export default function AddImportModal({ open, onClose }: AddImportModalProps) {
   const [supplier, setSupplier] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const addImport = useAddImport();
+  const uploadPhotos = useUploadProductPhotos();
 
   if (!open) return null;
 
@@ -69,7 +74,22 @@ export default function AddImportModal({ open, onClose }: AddImportModalProps) {
         })),
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
+          // Upload photos for each product
+          for (const line of validLines) {
+            if (line.photos.length > 0) {
+              const brandName = line.brand === "Other" ? line.customBrand : line.brand;
+              const { data: product } = await supabase
+                .from("products")
+                .select("id")
+                .eq("name", line.product_name)
+                .eq("brand", brandName)
+                .maybeSingle();
+              if (product) {
+                uploadPhotos.mutate({ productId: product.id, files: line.photos });
+              }
+            }
+          }
           setLines([emptyLine()]); setSupplier(""); setDate(new Date().toISOString().split("T")[0]);
           onClose();
         },
@@ -151,6 +171,7 @@ export default function AddImportModal({ open, onClose }: AddImportModalProps) {
                       <input type="number" min={0} value={line.unit_buying_price || ""} onChange={(e) => updateLine(i, { unit_buying_price: parseFloat(e.target.value) || 0 })} placeholder="Enter buying price (ETB)" className="w-full px-3 py-1.5 rounded-md border border-border bg-background text-sm placeholder:text-muted-foreground/60" />
                     </div>
                   </div>
+                  <PhotoUploadField files={line.photos} onChange={(files) => updateLine(i, { photos: files })} />
                 </div>
               ))}
             </div>
