@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import { useAddProduct } from "@/hooks/useProducts";
+import { useUploadProductPhotos } from "@/hooks/useProductPhotos";
+import PhotoUploadField from "@/components/shared/PhotoUploadField";
 
 const categories = ["Laptop", "Mouse", "Keyboard", "Mic", "Accessory", "Storage", "Peripheral", "Misc"];
 const brandsByCategory: Record<string, string[]> = {
@@ -28,8 +30,10 @@ export default function AddProductModal({ open, onClose }: AddProductModalProps)
   const [qty, setQty] = useState(1);
   const [buyingPrice, setBuyingPrice] = useState<number>(0);
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [photos, setPhotos] = useState<File[]>([]);
 
   const addProduct = useAddProduct();
+  const uploadPhotos = useUploadProductPhotos();
 
   if (!open) return null;
 
@@ -48,10 +52,14 @@ export default function AddProductModal({ open, onClose }: AddProductModalProps)
         date_of_entry: date,
       },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
+          if (photos.length > 0 && data) {
+            uploadPhotos.mutate({ productId: data.id, files: photos });
+          }
           setCategory(""); setBrand(""); setCustomBrand(""); setName("");
           setDescription(""); setQty(1); setBuyingPrice(0);
           setDate(new Date().toISOString().split("T")[0]);
+          setPhotos([]);
           onClose();
         },
       }
@@ -116,6 +124,8 @@ export default function AddProductModal({ open, onClose }: AddProductModalProps)
               <label className="text-xs font-medium text-muted-foreground mb-1 block">Date of Entry</label>
               <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full px-3 py-1.5 rounded-md border border-border bg-background text-sm" />
             </div>
+
+            <PhotoUploadField files={photos} onChange={setPhotos} />
           </div>
 
           <div className="flex items-center justify-end gap-2 px-5 py-4 border-t border-border shrink-0">

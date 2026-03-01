@@ -8,7 +8,7 @@ import AppLayout from "@/components/layout/AppLayout";
 import Dashboard from "./pages/Dashboard";
 import Inventory from "./pages/Inventory";
 import Imported from "./pages/Imported";
-import Sales from "./pages/Sales";
+// Sales page removed — sales are now recorded via Sold button on Inventory/Imported
 import HistoryPage from "./pages/History";
 import SettingsPage from "./pages/Settings";
 import NotesPage from "./pages/Notes";
@@ -36,7 +36,7 @@ function ProtectedRoutes() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/inventory" element={<Inventory />} />
         <Route path="/imported" element={<Imported />} />
-        <Route path="/sales" element={<Sales />} />
+        {/* Sales page removed — sales recorded via Sold button */}
         <Route path="/history" element={<HistoryPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/notes" element={<NotesPage />} />
