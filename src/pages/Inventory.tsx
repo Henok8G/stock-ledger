@@ -35,7 +35,6 @@ export default function Inventory() {
   const [editProduct, setEditProduct] = useState<Product | null>(null);
   const [soldProduct, setSoldProduct] = useState<Product | null>(null);
 
-  // Edit form state
   const [editName, setEditName] = useState("");
   const [editQty, setEditQty] = useState(0);
   const [editPrice, setEditPrice] = useState(0);
@@ -99,76 +98,76 @@ export default function Inventory() {
     });
   };
 
-  if (isLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground">Loading inventory…</div>;
+  if (isLoading) return <div className="flex items-center justify-center h-64 text-muted-foreground text-[13px]">Loading inventory…</div>;
 
   return (
     <div className="space-y-4 max-w-[1400px] mx-auto">
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-accent text-sm flex-1 min-w-[200px] max-w-[360px] overflow-hidden">
-          <Search className="w-4 h-4 text-muted-foreground shrink-0" />
-          <input type="text" placeholder="Search…" value={search} onChange={(e) => setSearch(e.target.value)} className="flex-1 min-w-0 bg-transparent outline-none placeholder:text-muted-foreground/60 text-foreground truncate" aria-label="Search inventory" />
+      <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex items-center gap-2 px-3 py-[7px] rounded-lg bg-accent/70 border border-border/50 text-[13px] flex-1 min-w-[200px] max-w-[340px] overflow-hidden">
+          <Search className="w-3.5 h-3.5 text-muted-foreground shrink-0 opacity-50" />
+          <input type="text" placeholder="Search products…" value={search} onChange={(e) => setSearch(e.target.value)} className="flex-1 min-w-0 bg-transparent outline-none placeholder:text-muted-foreground/50 text-foreground truncate" aria-label="Search inventory" />
         </div>
 
-        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-3 py-1.5 rounded-md border border-border bg-background text-sm text-foreground">
+        <select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)} className="px-3 py-[7px] rounded-lg border border-border bg-background text-[13px] text-foreground">
           {categories.map((c) => <option key={c} value={c}>{c === "All" ? "All Categories" : c}</option>)}
         </select>
 
-        <select value={brandFilter} onChange={(e) => setBrandFilter(e.target.value)} className="px-3 py-1.5 rounded-md border border-border bg-background text-sm text-foreground">
+        <select value={brandFilter} onChange={(e) => setBrandFilter(e.target.value)} className="px-3 py-[7px] rounded-lg border border-border bg-background text-[13px] text-foreground">
           {brands.map((b) => <option key={b} value={b}>{b === "All" ? "All Brands" : b}</option>)}
         </select>
 
         <div className="flex-1" />
 
-        <div className="flex items-center gap-1 border border-border rounded-md p-0.5">
-          <button onClick={() => setViewMode("table")} className={`p-1.5 rounded ${viewMode === "table" ? "bg-accent" : ""}`}><List className="w-4 h-4" /></button>
-          <button onClick={() => setViewMode("grid")} className={`p-1.5 rounded ${viewMode === "grid" ? "bg-accent" : ""}`}><Grid3X3 className="w-4 h-4" /></button>
+        <div className="flex items-center gap-0.5 border border-border rounded-lg p-0.5">
+          <button onClick={() => setViewMode("table")} className={`p-1.5 rounded-md transition-colors ${viewMode === "table" ? "bg-accent text-foreground" : "text-muted-foreground hover:text-foreground"}`}><List className="w-4 h-4" /></button>
+          <button onClick={() => setViewMode("grid")} className={`p-1.5 rounded-md transition-colors ${viewMode === "grid" ? "bg-accent text-foreground" : "text-muted-foreground hover:text-foreground"}`}><Grid3X3 className="w-4 h-4" /></button>
         </div>
 
-        <button onClick={handleExport} className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-border bg-background text-sm font-medium hover:bg-accent transition-colors">
-          <FileDown className="w-4 h-4" /> Export
+        <button onClick={handleExport} className="flex items-center gap-2 px-3 py-[7px] rounded-lg border border-border bg-background text-[13px] font-medium hover:bg-accent transition-colors">
+          <FileDown className="w-3.5 h-3.5" /> Export
         </button>
 
-        <button onClick={() => setShowAddProduct(true)} className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity">
-          <Plus className="w-4 h-4" /> Add Product
+        <button onClick={() => setShowAddProduct(true)} className="flex items-center gap-2 px-3 py-[7px] rounded-lg bg-primary text-primary-foreground text-[13px] font-medium hover:opacity-90 transition-opacity">
+          <Plus className="w-3.5 h-3.5" /> Add Product
         </button>
       </div>
 
-      <p className="text-sm text-muted-foreground">{filtered.length} product{filtered.length !== 1 ? "s" : ""}</p>
+      <p className="text-[12px] text-muted-foreground">{filtered.length} product{filtered.length !== 1 ? "s" : ""}</p>
 
       {viewMode === "table" ? (
         <div className="rounded-lg border border-border bg-card card-shadow overflow-visible">
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+            <table className="w-full text-[13px]">
               <thead>
-                <tr className="border-b border-border bg-accent/50">
-                  <th className="text-left px-4 py-2 font-medium text-muted-foreground">Item Name</th>
-                  <th className="text-left px-4 py-2 font-medium text-muted-foreground">Brand</th>
-                  <th className="text-left px-4 py-2 font-medium text-muted-foreground">Category</th>
-                  <th className="text-right px-4 py-2 font-medium text-muted-foreground">Buying Price</th>
-                  <th className="text-left px-4 py-2 font-medium text-muted-foreground">Date Added</th>
-                  <th className="w-24 px-4 py-2"></th>
+                <tr className="border-b border-border bg-accent/40">
+                  <th className="text-left px-4 py-2.5 text-muted-foreground">Item Name</th>
+                  <th className="text-left px-4 py-2.5 text-muted-foreground">Brand</th>
+                  <th className="text-left px-4 py-2.5 text-muted-foreground">Category</th>
+                  <th className="text-right px-4 py-2.5 text-muted-foreground">Buying Price</th>
+                  <th className="text-left px-4 py-2.5 text-muted-foreground">Date Added</th>
+                  <th className="w-24 px-4 py-2.5"></th>
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((p) => (
-                  <tr key={p.id} onClick={() => setDrawerProduct(p)} className="border-b border-border last:border-0 hover:bg-accent/30 cursor-pointer transition-colors" role="button">
-                    <td className="px-4 py-2.5 font-medium text-foreground">{p.name}</td>
-                    <td className="px-4 py-2.5 text-muted-foreground">{p.brand}</td>
-                    <td className="px-4 py-2.5"><span className="inline-flex px-2 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">{p.category}</span></td>
-                    <td className="px-4 py-2.5 text-right">{formatETB(Number(p.buying_price))}</td>
-                    <td className="px-4 py-2.5 text-muted-foreground text-xs">{formatDate(p.date_of_entry)}</td>
-                    <td className="px-4 py-2.5 flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                  <tr key={p.id} onClick={() => setDrawerProduct(p)} className="border-b border-border/60 last:border-0 hover:bg-accent/30 cursor-pointer transition-colors" role="button">
+                    <td className="px-4 py-3 font-medium text-foreground">{p.name}</td>
+                    <td className="px-4 py-3 text-muted-foreground">{p.brand}</td>
+                    <td className="px-4 py-3"><span className="inline-flex px-2 py-0.5 rounded-full text-[11px] font-medium bg-accent text-accent-foreground">{p.category}</span></td>
+                    <td className="px-4 py-3 text-right tabular-nums">{formatETB(Number(p.buying_price))}</td>
+                    <td className="px-4 py-3 text-muted-foreground text-[12px]">{formatDate(p.date_of_entry)}</td>
+                    <td className="px-4 py-3 flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
                       {role === "owner" && (
                         <button
                           onClick={() => setSoldProduct(p)}
-                          className="flex items-center gap-1 px-2 py-1 rounded-md bg-success/10 text-success text-xs font-medium hover:bg-success/20 transition-colors"
+                          className="flex items-center gap-1 px-2 py-1 rounded-md bg-success/10 text-success text-[11px] font-semibold hover:bg-success/20 transition-colors"
                         >
                           <ShoppingCart className="w-3 h-3" /> Sold
                         </button>
                       )}
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <button className="p-1 rounded hover:bg-accent transition-colors"><MoreHorizontal className="w-4 h-4 text-muted-foreground" /></button>
+                          <button className="p-1 rounded-md hover:bg-accent transition-colors"><MoreHorizontal className="w-4 h-4 text-muted-foreground" /></button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-36">
                           <DropdownMenuItem onClick={() => openEdit(p)}>
@@ -189,55 +188,54 @@ export default function Inventory() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {filtered.map((p) => (
-            <div key={p.id} onClick={() => setDrawerProduct(p)} className="rounded-lg border border-border bg-card p-4 card-shadow hover:border-primary/30 cursor-pointer transition-colors" role="button">
-              <div className="flex items-start justify-between mb-2">
-                <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-accent text-accent-foreground">{p.category}</span>
+            <div key={p.id} onClick={() => setDrawerProduct(p)} className="rounded-lg border border-border bg-card p-4 card-shadow hover:card-shadow-hover hover:border-primary/20 cursor-pointer transition-all" role="button">
+              <div className="flex items-start justify-between mb-2.5">
+                <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-accent text-accent-foreground">{p.category}</span>
                 {role === "owner" && (
                   <button
                     onClick={(e) => { e.stopPropagation(); setSoldProduct(p); }}
-                    className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-success/10 text-success text-xs font-medium hover:bg-success/20 transition-colors"
+                    className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-success/10 text-success text-[11px] font-semibold hover:bg-success/20 transition-colors"
                   >
                     <ShoppingCart className="w-3 h-3" /> Sold
                   </button>
                 )}
               </div>
-              <h4 className="font-medium text-foreground mb-0.5 text-sm">{p.name}</h4>
-              <p className="text-xs text-muted-foreground mb-3">{p.brand}</p>
-              <div className="flex items-center justify-between text-sm">
-                <span className="font-medium">{formatETB(Number(p.buying_price))}</span>
+              <h4 className="font-medium text-foreground mb-0.5 text-[13px]">{p.name}</h4>
+              <p className="text-[12px] text-muted-foreground mb-3">{p.brand}</p>
+              <div className="flex items-center justify-between text-[13px]">
+                <span className="font-semibold tabular-nums">{formatETB(Number(p.buying_price))}</span>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Detail Drawer */}
       <DetailDrawer open={!!drawerProduct} onClose={() => setDrawerProduct(null)} title={drawerProduct?.name ?? ""}>
         {drawerProduct && (
-          <div className="space-y-4 text-sm">
+          <div className="space-y-4 text-[13px]">
             <PhotoGallery productId={drawerProduct.id} allowUpload={role === "owner"} />
             <div className="grid grid-cols-2 gap-3">
-              <div><span className="text-muted-foreground">SKU</span><div className="font-medium font-mono text-xs">{drawerProduct.sku}</div></div>
-              <div><span className="text-muted-foreground">Category</span><div className="font-medium">{drawerProduct.category}</div></div>
-              <div><span className="text-muted-foreground">Brand</span><div className="font-medium">{drawerProduct.brand}</div></div>
-              <div><span className="text-muted-foreground">Buying Price</span><div className="font-medium">{formatETB(Number(drawerProduct.buying_price))}</div></div>
-              <div><span className="text-muted-foreground">In Stock</span><div className="font-medium">{drawerProduct.qty_in_stock}</div></div>
+              <div><span className="text-muted-foreground text-[12px]">SKU</span><div className="font-medium font-mono text-[12px] mt-0.5">{drawerProduct.sku}</div></div>
+              <div><span className="text-muted-foreground text-[12px]">Category</span><div className="font-medium mt-0.5">{drawerProduct.category}</div></div>
+              <div><span className="text-muted-foreground text-[12px]">Brand</span><div className="font-medium mt-0.5">{drawerProduct.brand}</div></div>
+              <div><span className="text-muted-foreground text-[12px]">Buying Price</span><div className="font-medium mt-0.5">{formatETB(Number(drawerProduct.buying_price))}</div></div>
+              <div><span className="text-muted-foreground text-[12px]">In Stock</span><div className="font-medium mt-0.5">{drawerProduct.qty_in_stock}</div></div>
             </div>
             <div className="h-px bg-border" />
-            <div><span className="text-muted-foreground">Description</span><div className="font-medium mt-1">{drawerProduct.description || "—"}</div></div>
-            <div><span className="text-muted-foreground">Date of Entry</span><div className="font-medium">{formatDate(drawerProduct.date_of_entry)}</div></div>
+            <div><span className="text-muted-foreground text-[12px]">Description</span><div className="font-medium mt-1">{drawerProduct.description || "—"}</div></div>
+            <div><span className="text-muted-foreground text-[12px]">Date of Entry</span><div className="font-medium mt-0.5">{formatDate(drawerProduct.date_of_entry)}</div></div>
             <div className="h-px bg-border" />
             <div className="flex gap-2">
               {role === "owner" && (
-                <button onClick={() => setSoldProduct(drawerProduct)} className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-success text-success-foreground text-sm font-medium hover:opacity-90 transition-opacity flex-1 justify-center">
+                <button onClick={() => setSoldProduct(drawerProduct)} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-success text-success-foreground text-[13px] font-medium hover:opacity-90 transition-opacity flex-1 justify-center">
                   <ShoppingCart className="w-3.5 h-3.5" /> Sold
                 </button>
               )}
-              <button onClick={() => openEdit(drawerProduct)} className="flex items-center gap-2 px-3 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity flex-1 justify-center">
+              <button onClick={() => openEdit(drawerProduct)} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-primary text-primary-foreground text-[13px] font-medium hover:opacity-90 transition-opacity flex-1 justify-center">
                 <Pencil className="w-3.5 h-3.5" /> Edit
               </button>
               {role === "owner" && (
-                <button onClick={() => handleDelete(drawerProduct)} className="flex items-center gap-2 px-3 py-1.5 rounded-md border border-destructive text-destructive text-sm font-medium hover:bg-destructive/10 transition-colors flex-1 justify-center">
+                <button onClick={() => handleDelete(drawerProduct)} className="flex items-center gap-2 px-3 py-2 rounded-lg border border-destructive text-destructive text-[13px] font-medium hover:bg-destructive/10 transition-colors flex-1 justify-center">
                   <Trash2 className="w-3.5 h-3.5" /> Delete
                 </button>
               )}
@@ -246,38 +244,37 @@ export default function Inventory() {
         )}
       </DetailDrawer>
 
-      {/* Edit Modal */}
       {editProduct && (
         <>
-          <div className="fixed inset-0 z-40 bg-foreground/10 backdrop-blur-[2px]" onClick={() => setEditProduct(null)} aria-hidden />
+          <div className="fixed inset-0 z-40 bg-foreground/15 backdrop-blur-[3px]" onClick={() => setEditProduct(null)} aria-hidden />
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="bg-background border border-border rounded-lg modal-shadow w-full max-w-md max-h-[90vh] flex flex-col p-5 space-y-4 animate-fade-in">
-              <h3 className="text-base font-semibold">Edit Product</h3>
+            <div className="bg-background border border-border rounded-xl modal-shadow w-full max-w-md max-h-[90vh] flex flex-col p-5 space-y-4 animate-scale-in">
+              <h3 className="text-[15px] font-semibold">Edit Product</h3>
               <div className="flex-1 overflow-y-auto space-y-4">
                 <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1 block">Name</label>
-                  <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} className="w-full px-3 py-1.5 rounded-md border border-border bg-background text-sm" />
+                  <label className="text-[12px] font-medium text-muted-foreground mb-1.5 block">Name</label>
+                  <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)} className="w-full px-3 py-2 rounded-lg border border-border bg-background text-[13px] focus:ring-2 focus:ring-ring outline-none" />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-xs font-medium text-muted-foreground mb-1 block">Quantity</label>
-                    <input type="number" value={editQty} onChange={(e) => setEditQty(parseInt(e.target.value) || 0)} className="w-full px-3 py-1.5 rounded-md border border-border bg-background text-sm" />
+                    <label className="text-[12px] font-medium text-muted-foreground mb-1.5 block">Quantity</label>
+                    <input type="number" value={editQty} onChange={(e) => setEditQty(parseInt(e.target.value) || 0)} className="w-full px-3 py-2 rounded-lg border border-border bg-background text-[13px] focus:ring-2 focus:ring-ring outline-none" />
                   </div>
                   <div>
-                    <label className="text-xs font-medium text-muted-foreground mb-1 block">Buying Price (ETB)</label>
-                    <input type="number" value={editPrice} onChange={(e) => setEditPrice(parseFloat(e.target.value) || 0)} className="w-full px-3 py-1.5 rounded-md border border-border bg-background text-sm" />
+                    <label className="text-[12px] font-medium text-muted-foreground mb-1.5 block">Buying Price (ETB)</label>
+                    <input type="number" value={editPrice} onChange={(e) => setEditPrice(parseFloat(e.target.value) || 0)} className="w-full px-3 py-2 rounded-lg border border-border bg-background text-[13px] focus:ring-2 focus:ring-ring outline-none" />
                   </div>
                 </div>
                 <div>
-                  <label className="text-xs font-medium text-muted-foreground mb-1 block">Description</label>
-                  <textarea value={editDesc} onChange={(e) => setEditDesc(e.target.value)} rows={2} className="w-full px-3 py-1.5 rounded-md border border-border bg-background text-sm resize-none" />
+                  <label className="text-[12px] font-medium text-muted-foreground mb-1.5 block">Description</label>
+                  <textarea value={editDesc} onChange={(e) => setEditDesc(e.target.value)} rows={2} className="w-full px-3 py-2 rounded-lg border border-border bg-background text-[13px] resize-none focus:ring-2 focus:ring-ring outline-none" />
                 </div>
                 <PhotoUploadField files={editPhotos} onChange={setEditPhotos} />
                 <PhotoGallery productId={editProduct.id} allowUpload={false} />
               </div>
-              <div className="flex gap-2 justify-end">
-                <button onClick={() => setEditProduct(null)} className="px-4 py-1.5 rounded-md border border-border text-sm font-medium hover:bg-accent">Cancel</button>
-                <button onClick={handleSaveEdit} disabled={updateProduct.isPending} className="px-4 py-1.5 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 disabled:opacity-50">
+              <div className="flex gap-2 justify-end pt-2 border-t border-border">
+                <button onClick={() => setEditProduct(null)} className="px-4 py-2 rounded-lg border border-border text-[13px] font-medium hover:bg-accent">Cancel</button>
+                <button onClick={handleSaveEdit} disabled={updateProduct.isPending} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-[13px] font-medium hover:opacity-90 disabled:opacity-50">
                   {updateProduct.isPending ? "Saving…" : "Save"}
                 </button>
               </div>
