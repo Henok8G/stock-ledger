@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { StickyNote, Plus, Trash2, Save, Pencil, X, Search, Calendar } from "lucide-react";
 import { useNotes, useCreateNote, useUpdateNote, useDeleteNote, type Note } from "@/hooks/useNotes";
 import { format } from "date-fns";
@@ -70,78 +70,71 @@ export default function Notes() {
     if (editingId === id) resetEditor();
   };
 
-  // word + char count
   const wordCount = content.trim() ? content.trim().split(/\s+/).length : 0;
   const charCount = content.length;
 
   return (
     <div className="max-w-[1400px] mx-auto space-y-4">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <StickyNote className="w-5 h-5 text-primary" />
-          <h4 className="font-semibold text-foreground">Notes</h4>
+          <StickyNote className="w-4 h-4 text-primary" />
+          <h4 className="font-semibold text-foreground text-[15px]">Notes</h4>
         </div>
-        <span className="text-xs text-muted-foreground">{notes.length} note{notes.length !== 1 ? "s" : ""} total</span>
+        <span className="text-[12px] text-muted-foreground">{notes.length} note{notes.length !== 1 ? "s" : ""} total</span>
       </div>
 
-      <div className="grid lg:grid-cols-[1fr_380px] gap-6 items-start">
-        {/* LEFT: Editor */}
+      <div className="grid lg:grid-cols-[1fr_360px] gap-6 items-start">
+        {/* Editor */}
         <div className="rounded-xl border border-border bg-card card-shadow overflow-hidden">
-          <div className="px-5 py-4 border-b border-border flex items-center justify-between">
-            <span className="text-sm font-medium text-foreground">
+          <div className="px-5 py-3.5 border-b border-border flex items-center justify-between">
+            <span className="text-[13px] font-medium text-foreground">
               {editingId ? "Edit Note" : "New Note"}
             </span>
             {editingId && (
-              <button onClick={resetEditor} className="p-1 rounded hover:bg-accent transition-colors text-muted-foreground hover:text-foreground">
+              <button onClick={resetEditor} className="p-1 rounded-lg hover:bg-accent transition-colors text-muted-foreground hover:text-foreground">
                 <X className="w-4 h-4" />
               </button>
             )}
           </div>
 
           <div className="p-5 space-y-4">
-            {/* Title */}
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Note title…"
-              className="w-full bg-transparent text-lg font-semibold text-foreground placeholder:text-muted-foreground/50 outline-none border-none"
+              className="w-full bg-transparent text-[16px] font-semibold text-foreground placeholder:text-muted-foreground/40 outline-none border-none tracking-tight"
             />
 
-            {/* Divider */}
             <div className="h-px bg-border" />
 
-            {/* Color picker */}
             <div className="flex items-center gap-2">
-              <span className="text-xs text-muted-foreground">Color:</span>
+              <span className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">Color:</span>
               <div className="flex gap-1.5">
                 {NOTE_COLORS.map((c) => (
                   <button
                     key={c.key}
                     onClick={() => setColor(c.key)}
                     title={c.label}
-                    className={`w-5 h-5 rounded-full border-2 transition-all ${c.dot} ${color === c.key ? "border-foreground scale-110 shadow" : "border-transparent opacity-70 hover:opacity-100"}`}
+                    className={`w-5 h-5 rounded-full border-2 transition-all ${c.dot} ${color === c.key ? "border-foreground scale-110 shadow-sm" : "border-transparent opacity-60 hover:opacity-100"}`}
                   />
                 ))}
               </div>
             </div>
 
-            {/* Textarea */}
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Write your note here… Use this space for reminders, observations, supplier notes, or anything your team needs to know."
               rows={12}
-              className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground/50 outline-none resize-none leading-relaxed"
+              className="w-full bg-transparent text-[13px] text-foreground placeholder:text-muted-foreground/40 outline-none resize-none leading-relaxed"
             />
 
-            {/* Footer bar */}
-            <div className="flex items-center justify-between pt-2 border-t border-border">
-              <span className="text-xs text-muted-foreground">{wordCount} words · {charCount} chars</span>
+            <div className="flex items-center justify-between pt-3 border-t border-border">
+              <span className="text-[11px] text-muted-foreground">{wordCount} words · {charCount} chars</span>
               <button
                 onClick={handleSave}
                 disabled={createNote.isPending || updateNote.isPending || (!title.trim() && !content.trim())}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 disabled:opacity-40 transition-opacity"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-[13px] font-medium hover:opacity-90 disabled:opacity-40 transition-opacity"
               >
                 <Save className="w-3.5 h-3.5" />
                 {editingId ? "Update Note" : "Save Note"}
@@ -150,31 +143,29 @@ export default function Notes() {
           </div>
         </div>
 
-        {/* RIGHT: History + Detail */}
+        {/* Right panel */}
         <div className="space-y-4">
-          {/* Search */}
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-border bg-card">
-            <Search className="w-4 h-4 text-muted-foreground shrink-0" />
+          <div className="flex items-center gap-2 px-3 py-[7px] rounded-lg border border-border bg-card">
+            <Search className="w-3.5 h-3.5 text-muted-foreground shrink-0 opacity-50" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search notes…"
-              className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/60 text-foreground"
+              className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-muted-foreground/50 text-foreground"
             />
           </div>
 
-          {/* Notes list */}
           <div className="rounded-xl border border-border bg-card card-shadow overflow-hidden">
             <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-              <span className="text-sm font-medium text-foreground">Note History</span>
-              <span className="text-xs text-muted-foreground">{filtered.length} notes</span>
+              <span className="text-[13px] font-medium text-foreground">Note History</span>
+              <span className="text-[11px] text-muted-foreground">{filtered.length} notes</span>
             </div>
-            <div className="divide-y divide-border max-h-[420px] overflow-y-auto">
+            <div className="divide-y divide-border/60 max-h-[420px] overflow-y-auto">
               {isLoading && (
-                <div className="px-4 py-8 text-center text-sm text-muted-foreground">Loading…</div>
+                <div className="px-4 py-8 text-center text-[13px] text-muted-foreground">Loading…</div>
               )}
               {!isLoading && filtered.length === 0 && (
-                <div className="px-4 py-8 text-center text-sm text-muted-foreground">No notes yet. Write your first one!</div>
+                <div className="px-4 py-8 text-center text-[13px] text-muted-foreground">No notes yet. Write your first one!</div>
               )}
               {filtered.map((note) => {
                 const cm = colorMeta(note.color);
@@ -182,31 +173,31 @@ export default function Notes() {
                   <div
                     key={note.id}
                     onClick={() => setSelectedNote(selectedNote?.id === note.id ? null : note)}
-                    className={`group px-4 py-3 cursor-pointer hover:bg-accent/40 transition-colors ${selectedNote?.id === note.id ? "bg-accent/50" : ""}`}
+                    className={`group px-4 py-3 cursor-pointer hover:bg-accent/30 transition-colors ${selectedNote?.id === note.id ? "bg-accent/40" : ""}`}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-start gap-2 min-w-0">
-                        <span className={`mt-1 w-2 h-2 rounded-full shrink-0 ${cm.dot}`} />
+                        <span className={`mt-1.5 w-2 h-2 rounded-full shrink-0 ${cm.dot}`} />
                         <div className="min-w-0">
-                          <div className="text-sm font-medium text-foreground truncate">{note.title}</div>
-                          <div className="text-xs text-muted-foreground truncate mt-0.5 max-w-[200px]">{note.content || "No content"}</div>
+                          <div className="text-[13px] font-medium text-foreground truncate">{note.title}</div>
+                          <div className="text-[12px] text-muted-foreground truncate mt-0.5 max-w-[200px]">{note.content || "No content"}</div>
                         </div>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1 text-[11px] text-muted-foreground">
                           <Calendar className="w-3 h-3" />
                           {formatDate(note.updated_at)}
                         </div>
                         <div className="opacity-0 group-hover:opacity-100 flex items-center gap-0.5 ml-1 transition-opacity">
                           <button
                             onClick={(e) => { e.stopPropagation(); handleEdit(note); }}
-                            className="p-1 rounded hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+                            className="p-1 rounded-md hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
                           >
                             <Pencil className="w-3 h-3" />
                           </button>
                           <button
                             onClick={(e) => { e.stopPropagation(); handleDelete(note.id); }}
-                            className="p-1 rounded hover:bg-destructive/10 transition-colors text-muted-foreground hover:text-destructive"
+                            className="p-1 rounded-md hover:bg-destructive/10 transition-colors text-muted-foreground hover:text-destructive"
                           >
                             <Trash2 className="w-3 h-3" />
                           </button>
@@ -219,31 +210,30 @@ export default function Notes() {
             </div>
           </div>
 
-          {/* Detail view */}
           {selectedNote && (() => {
             const cm = colorMeta(selectedNote.color);
             return (
               <div className={`rounded-xl border ${cm.border} ${cm.bg} card-shadow overflow-hidden`}>
-                <div className="px-4 py-3 border-b border-border/50 flex items-center justify-between">
-                  <span className="text-sm font-medium text-foreground">Note Detail</span>
+                <div className="px-4 py-3 border-b border-border/40 flex items-center justify-between">
+                  <span className="text-[13px] font-medium text-foreground">Note Detail</span>
                   <div className="flex items-center gap-1">
-                    <button onClick={() => handleEdit(selectedNote)} className="p-1 rounded hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground">
+                    <button onClick={() => handleEdit(selectedNote)} className="p-1 rounded-md hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground">
                       <Pencil className="w-3.5 h-3.5" />
                     </button>
-                    <button onClick={() => handleDelete(selectedNote.id)} className="p-1 rounded hover:bg-destructive/10 transition-colors text-muted-foreground hover:text-destructive">
+                    <button onClick={() => handleDelete(selectedNote.id)} className="p-1 rounded-md hover:bg-destructive/10 transition-colors text-muted-foreground hover:text-destructive">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
-                    <button onClick={() => setSelectedNote(null)} className="p-1 rounded hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground">
+                    <button onClick={() => setSelectedNote(null)} className="p-1 rounded-md hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground">
                       <X className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
                 <div className="px-4 py-4 space-y-3">
                   <div>
-                    <div className="text-xs text-muted-foreground mb-0.5">Title</div>
-                    <div className="text-base font-semibold text-foreground">{selectedNote.title}</div>
+                    <div className="text-[11px] text-muted-foreground mb-0.5 uppercase tracking-wider font-medium">Title</div>
+                    <div className="text-[15px] font-semibold text-foreground tracking-tight">{selectedNote.title}</div>
                   </div>
-                  <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="grid grid-cols-2 gap-3 text-[12px]">
                     <div>
                       <div className="text-muted-foreground mb-0.5">Created</div>
                       <div className="font-medium text-foreground">{formatDate(selectedNote.created_at)}</div>
@@ -253,10 +243,10 @@ export default function Notes() {
                       <div className="font-medium text-foreground">{formatDate(selectedNote.updated_at)}</div>
                     </div>
                   </div>
-                  <div className="h-px bg-border/50" />
+                  <div className="h-px bg-border/40" />
                   <div>
-                    <div className="text-xs text-muted-foreground mb-1.5">Content</div>
-                    <div className="text-sm text-foreground whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">
+                    <div className="text-[11px] text-muted-foreground mb-1.5 uppercase tracking-wider font-medium">Content</div>
+                    <div className="text-[13px] text-foreground whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">
                       {selectedNote.content || <span className="text-muted-foreground italic">No content</span>}
                     </div>
                   </div>

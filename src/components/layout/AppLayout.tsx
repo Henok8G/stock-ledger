@@ -3,7 +3,7 @@ import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useCompanySettings } from "@/hooks/useCompanySettings";
 import {
-  LayoutDashboard, Package, Download, ShoppingCart, History, Settings, StickyNote,
+  LayoutDashboard, Package, Download, History, Settings, StickyNote,
   ChevronLeft, ChevronRight, Search, Moon, Sun, LogOut, Menu, X, Bell,
 } from "lucide-react";
 import NotificationBell from "@/components/shared/NotificationBell";
@@ -50,7 +50,6 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   const companyName = companySettings?.company_name || "TechStock";
   const isOwner = role === "owner";
 
-  // Show custom dialog to ask about notifications for owners
   useEffect(() => {
     if (!isOwner) return;
     if (!("Notification" in window)) return;
@@ -64,7 +63,6 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     await requestNotificationPermission();
   };
 
-  // Show OS-level notifications for owners
   useBrowserNotifications(isOwner);
 
   const toggleSidebar = useCallback(() => setSidebarCollapsed((c) => !c), []);
@@ -104,60 +102,60 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           <div className="fixed inset-0 z-40 bg-foreground/20 backdrop-blur-sm lg:hidden" onClick={() => setMobileOpen(false)} aria-hidden />
         )}
 
-        <aside className={`fixed lg:static inset-y-0 left-0 z-50 flex flex-col bg-sidebar text-sidebar-foreground transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"} ${sidebarCollapsed ? "w-[56px]" : "w-[220px]"}`}>
-          <div className={`flex items-center h-14 px-3 ${sidebarCollapsed ? "justify-center" : "gap-2"}`}>
-            <div className="flex items-center justify-center w-8 h-8 rounded-md bg-sidebar-accent">
-              <Package className="w-4 h-4 text-sidebar-foreground" />
+        <aside className={`fixed lg:static inset-y-0 left-0 z-50 flex flex-col bg-sidebar text-sidebar-foreground transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"} ${sidebarCollapsed ? "w-[56px]" : "w-[212px]"}`}>
+          <div className={`flex items-center h-14 px-3 border-b border-sidebar-border/50 ${sidebarCollapsed ? "justify-center" : "gap-2.5"}`}>
+            <div className="flex items-center justify-center w-7 h-7 rounded-md bg-sidebar-accent">
+              <Package className="w-3.5 h-3.5 text-sidebar-foreground" />
             </div>
-            {!sidebarCollapsed && <span className="text-sm font-semibold truncate">{companyName}</span>}
+            {!sidebarCollapsed && <span className="text-[13px] font-semibold truncate tracking-tight">{companyName}</span>}
           </div>
 
-          <nav className="flex-1 py-2 space-y-0.5 px-2">
+          <nav className="flex-1 py-3 space-y-0.5 px-2">
             {navItems.map((item) => (
               <NavLink key={item.to} to={item.to} onClick={() => setMobileOpen(false)}
-                className={({ isActive }) => `flex items-center gap-3 px-2.5 py-2 rounded-md text-sm transition-colors ${isActive ? "bg-sidebar-accent text-sidebar-foreground font-medium" : "text-sidebar-muted hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"} ${sidebarCollapsed ? "justify-center" : ""}`}
+                className={({ isActive }) => `flex items-center gap-2.5 px-2.5 py-[7px] rounded-md text-[13px] transition-all ${isActive ? "bg-sidebar-accent text-sidebar-foreground font-medium" : "text-sidebar-muted hover:bg-sidebar-accent/40 hover:text-sidebar-foreground"} ${sidebarCollapsed ? "justify-center" : ""}`}
                 end={item.to === "/"}>
-                <item.icon className="w-4 h-4 shrink-0" />
+                <item.icon className="w-[16px] h-[16px] shrink-0" />
                 {!sidebarCollapsed && <span>{item.label}</span>}
               </NavLink>
             ))}
           </nav>
 
-          <button onClick={toggleSidebar} className="hidden lg:flex items-center justify-center h-10 mx-2 mb-2 rounded-md text-sidebar-muted hover:bg-sidebar-accent hover:text-sidebar-foreground transition-colors">
+          <button onClick={toggleSidebar} className="hidden lg:flex items-center justify-center h-9 mx-2 mb-2 rounded-md text-sidebar-muted hover:bg-sidebar-accent/40 hover:text-sidebar-foreground transition-colors">
             {sidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
           </button>
         </aside>
 
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="flex items-center h-14 px-4 gap-3 border-b border-border bg-background/80 backdrop-blur-sm shrink-0 sticky top-0 z-30">
+          <header className="flex items-center h-[52px] px-4 gap-3 border-b border-border bg-background/70 glass-header shrink-0 sticky top-0 z-30">
             <button onClick={() => setMobileOpen((o) => !o)} className="lg:hidden p-1.5 rounded-md hover:bg-accent transition-colors">
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
 
-            <h4 className="font-semibold text-foreground">{pageTitle}</h4>
+            <h4 className="font-semibold text-foreground text-[15px] tracking-tight">{pageTitle}</h4>
             <div className="flex-1" />
 
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-md bg-accent text-muted-foreground text-sm w-56 overflow-hidden">
-              <Search className="w-4 h-4 shrink-0" />
-              <input type="text" placeholder="Search…" className="flex-1 min-w-0 bg-transparent outline-none placeholder:text-muted-foreground/60 text-foreground truncate" />
+            <div className="hidden sm:flex items-center gap-2 px-3 py-[6px] rounded-lg bg-accent/70 text-muted-foreground text-[13px] w-52 overflow-hidden border border-border/50">
+              <Search className="w-3.5 h-3.5 shrink-0 opacity-50" />
+              <input type="text" placeholder="Search…" className="flex-1 min-w-0 bg-transparent outline-none placeholder:text-muted-foreground/50 text-foreground truncate" />
             </div>
 
-            <button onClick={toggleDarkMode} className="p-1.5 rounded-md hover:bg-accent transition-colors text-muted-foreground">
+            <button onClick={toggleDarkMode} className="p-1.5 rounded-lg hover:bg-accent transition-colors text-muted-foreground">
               {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
 
             {role === "owner" && <NotificationBell />}
 
             <div className="relative">
-              <button onClick={() => setUserMenuOpen((o) => !o)} className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-xs font-medium">
+              <button onClick={() => setUserMenuOpen((o) => !o)} className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-[11px] font-semibold tracking-wide">
                 {(profile?.full_name || "U").slice(0, 2).toUpperCase()}
               </button>
               {userMenuOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setUserMenuOpen(false)} />
-                  <div className="absolute right-0 top-10 z-50 w-48 rounded-lg border border-border bg-popover text-popover-foreground modal-shadow py-1 animate-fade-in">
-                    <button onClick={() => { setUserMenuOpen(false); signOut(); }} className="flex items-center gap-2 w-full px-3 py-2 text-sm text-destructive hover:bg-accent transition-colors">
-                      <LogOut className="w-4 h-4" /> Log Out
+                  <div className="absolute right-0 top-10 z-50 w-44 rounded-lg border border-border bg-popover text-popover-foreground modal-shadow py-1 animate-scale-in">
+                    <button onClick={() => { setUserMenuOpen(false); signOut(); }} className="flex items-center gap-2 w-full px-3 py-2 text-[13px] text-destructive hover:bg-accent transition-colors">
+                      <LogOut className="w-3.5 h-3.5" /> Log Out
                     </button>
                   </div>
                 </>
