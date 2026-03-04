@@ -43,7 +43,7 @@
     --input: 214 32% 91%;
     --ring: 222 84% 11%;
 
-    --radius: 0.5rem;
+    --radius: 0.625rem;
 
     --sidebar-background: 222 84% 11%;
     --sidebar-foreground: 214 44% 93%;
@@ -127,13 +127,15 @@
     @apply bg-background text-foreground font-sans antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-size: 14px;
-    line-height: 1.143;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  h1 { @apply text-[28px] font-semibold tracking-tight; }
-  h2 { @apply text-[24px] font-semibold tracking-tight; }
-  h3 { @apply text-[20px] font-semibold tracking-tight; }
-  h4 { @apply text-[16px] font-medium; }
+  h1 { @apply text-[28px] font-semibold tracking-tight leading-tight; }
+  h2 { @apply text-[24px] font-semibold tracking-tight leading-tight; }
+  h3 { @apply text-[20px] font-semibold tracking-tight leading-snug; }
+  h4 { @apply text-[16px] font-medium leading-snug; }
 
   /* Focus outlines for accessibility */
   :focus-visible {
@@ -144,14 +146,44 @@
   .skip-link {
     @apply sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:rounded-md;
   }
+
+  /* Refined scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.2);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.35);
+  }
+
+  /* Smooth global transitions */
+  button, a, input, select, textarea {
+    @apply transition-colors duration-150;
+  }
 }
 
 @layer utilities {
   .card-shadow {
-    box-shadow: 0 1px 3px 0 hsl(222 84% 11% / 0.04), 0 1px 2px -1px hsl(222 84% 11% / 0.04);
+    box-shadow:
+      0 1px 2px 0 hsl(222 84% 11% / 0.03),
+      0 1px 3px 0 hsl(222 84% 11% / 0.06);
+  }
+  .card-shadow-hover {
+    box-shadow:
+      0 2px 8px 0 hsl(222 84% 11% / 0.06),
+      0 1px 3px 0 hsl(222 84% 11% / 0.08);
   }
   .modal-shadow {
-    box-shadow: 0 10px 25px -5px hsl(222 84% 11% / 0.1), 0 8px 10px -6px hsl(222 84% 11% / 0.08);
+    box-shadow:
+      0 20px 40px -12px hsl(222 84% 11% / 0.12),
+      0 8px 16px -8px hsl(222 84% 11% / 0.08);
   }
   .kpi-gradient {
     background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--background)) 100%);

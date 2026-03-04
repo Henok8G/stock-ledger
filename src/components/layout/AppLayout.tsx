@@ -104,7 +104,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           <div className="fixed inset-0 z-40 bg-foreground/20 backdrop-blur-sm lg:hidden" onClick={() => setMobileOpen(false)} aria-hidden />
         )}
 
-        <aside className={`fixed lg:static inset-y-0 left-0 z-50 flex flex-col bg-sidebar text-sidebar-foreground transition-all duration-200 ease-in-out ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"} ${sidebarCollapsed ? "w-[56px]" : "w-[220px]"}`}>
+        <aside className={`fixed lg:static inset-y-0 left-0 z-50 flex flex-col bg-sidebar text-sidebar-foreground transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"} ${sidebarCollapsed ? "w-[56px]" : "w-[220px]"}`}>
           <div className={`flex items-center h-14 px-3 ${sidebarCollapsed ? "justify-center" : "gap-2"}`}>
             <div className="flex items-center justify-center w-8 h-8 rounded-md bg-sidebar-accent">
               <Package className="w-4 h-4 text-sidebar-foreground" />
@@ -129,7 +129,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         </aside>
 
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="flex items-center h-14 px-4 gap-3 border-b border-border bg-background shrink-0">
+          <header className="flex items-center h-14 px-4 gap-3 border-b border-border bg-background/80 backdrop-blur-sm shrink-0 sticky top-0 z-30">
             <button onClick={() => setMobileOpen((o) => !o)} className="lg:hidden p-1.5 rounded-md hover:bg-accent transition-colors">
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
