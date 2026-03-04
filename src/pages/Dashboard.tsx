@@ -151,30 +151,6 @@ export default function Dashboard() {
         </div>
 
         <div className="space-y-4">
-          {stockByCategory.length > 0 && (
-            <div className="rounded-lg border border-border bg-card p-4 card-shadow">
-              <h4 className="font-medium text-foreground mb-3">Stock by Category</h4>
-              <div className="h-[180px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie data={stockByCategory} cx="50%" cy="50%" innerRadius={50} outerRadius={75} paddingAngle={2} dataKey="value">
-                      {stockByCategory.map((entry, i) => <Cell key={i} fill={entry.color} />)}
-                    </Pie>
-                    <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} formatter={(value: number, name: string) => [`${value} units`, name]} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
-                {stockByCategory.map((c) => (
-                  <div key={c.name} className="flex items-center gap-1.5 text-xs">
-                    <span className="w-2 h-2 rounded-full" style={{ background: c.color }} />
-                    <span className="text-muted-foreground">{c.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
           <div className="rounded-lg border border-border bg-card p-4 card-shadow">
             <h4 className="font-medium text-foreground mb-3">Quick Actions</h4>
             <div className="grid grid-cols-2 gap-2">
