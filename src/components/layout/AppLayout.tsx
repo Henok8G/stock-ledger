@@ -129,7 +129,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         </aside>
 
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="flex items-center h-14 px-4 gap-3 border-b border-border bg-background shrink-0">
+          <header className="flex items-center h-14 px-4 gap-3 border-b border-border bg-background/80 backdrop-blur-sm shrink-0 sticky top-0 z-30">
             <button onClick={() => setMobileOpen((o) => !o)} className="lg:hidden p-1.5 rounded-md hover:bg-accent transition-colors">
               {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
