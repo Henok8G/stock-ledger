@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,25 +6,25 @@
 
 @layer base {
   :root {
-    --background: 0 0% 99%;
-    --foreground: 222 84% 8%;
+    --background: 0 0% 98.5%;
+    --foreground: 222 47% 11%;
 
-    --card: 210 40% 98.5%;
-    --card-foreground: 222 84% 8%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 84% 8%;
+    --popover-foreground: 222 47% 11%;
 
     --primary: 222 84% 11%;
     --primary-foreground: 210 40% 98%;
 
-    --secondary: 210 40% 96%;
+    --secondary: 214 32% 96%;
     --secondary-foreground: 222 47% 11%;
 
     --muted: 214 20% 95%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 214 25% 94%;
+    --accent: 214 25% 93.5%;
     --accent-foreground: 222 47% 11%;
 
     --destructive: 0 72% 51%;
@@ -43,7 +43,7 @@
     --input: 220 13% 91%;
     --ring: 222 84% 11%;
 
-    --radius: 0.5rem;
+    --radius: 0.625rem;
 
     --sidebar-background: 222 84% 11%;
     --sidebar-foreground: 214 44% 93%;
@@ -66,10 +66,10 @@
     --background: 222 84% 5%;
     --foreground: 214 44% 93%;
 
-    --card: 222 60% 9%;
+    --card: 222 50% 8%;
     --card-foreground: 214 44% 93%;
 
-    --popover: 222 60% 9%;
+    --popover: 222 50% 8%;
     --popover-foreground: 214 44% 93%;
 
     --primary: 210 40% 98%;
@@ -78,10 +78,10 @@
     --secondary: 222 40% 16%;
     --secondary-foreground: 214 44% 93%;
 
-    --muted: 222 40% 16%;
+    --muted: 222 40% 14%;
     --muted-foreground: 214 20% 64%;
 
-    --accent: 222 30% 16%;
+    --accent: 222 30% 15%;
     --accent-foreground: 214 44% 93%;
 
     --destructive: 0 62% 30%;
@@ -96,8 +96,8 @@
     --info: 210 80% 40%;
     --info-foreground: 214 44% 93%;
 
-    --border: 222 30% 18%;
-    --input: 222 30% 18%;
+    --border: 222 25% 16%;
+    --input: 222 25% 16%;
     --ring: 214 44% 93%;
 
     --sidebar-background: 222 90% 4%;
@@ -124,52 +124,37 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-size: 14px;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    letter-spacing: -0.006em;
+    letter-spacing: -0.011em;
   }
 
-  h1 { @apply text-[26px] font-semibold tracking-[-0.02em] leading-tight; }
+  h1 { @apply text-[26px] font-semibold tracking-[-0.025em] leading-tight; }
   h2 { @apply text-[22px] font-semibold tracking-[-0.02em] leading-tight; }
-  h3 { @apply text-[18px] font-semibold tracking-[-0.01em] leading-snug; }
+  h3 { @apply text-[18px] font-semibold tracking-[-0.015em] leading-snug; }
   h4 { @apply text-[15px] font-medium tracking-[-0.01em] leading-snug; }
 
-  /* Focus outlines for accessibility */
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-ring;
   }
 
-  /* Skip link */
   .skip-link {
     @apply sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:rounded-md;
   }
 
-  /* Refined scrollbars */
-  ::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-  }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: hsl(var(--muted-foreground) / 0.15);
-    border-radius: 999px;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: hsl(var(--muted-foreground) / 0.3);
-  }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--muted-foreground) / 0.12); border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground) / 0.25); }
 
-  /* Smooth global transitions */
   button, a, input, select, textarea {
     @apply transition-all duration-150 ease-out;
   }
 
-  /* Better select styling */
   select {
     @apply cursor-pointer appearance-none;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
@@ -179,33 +164,39 @@
     padding-right: 2rem;
   }
 
-  /* Better table styles */
   th {
-    @apply text-[11px] uppercase tracking-wider font-semibold;
+    @apply text-[11px] uppercase tracking-[0.06em] font-semibold;
+  }
+
+  td {
+    @apply text-[13px];
   }
 }
 
 @layer utilities {
   .card-shadow {
     box-shadow:
-      0 1px 2px 0 hsl(222 84% 11% / 0.04),
-      0 1px 3px 0 hsl(222 84% 11% / 0.06);
+      0 0 0 1px hsl(var(--border) / 0.5),
+      0 1px 3px 0 hsl(222 84% 11% / 0.04),
+      0 1px 2px -1px hsl(222 84% 11% / 0.03);
   }
   .card-shadow-hover {
     box-shadow:
+      0 0 0 1px hsl(var(--border) / 0.7),
       0 4px 12px 0 hsl(222 84% 11% / 0.06),
-      0 1px 3px 0 hsl(222 84% 11% / 0.08);
+      0 2px 4px -1px hsl(222 84% 11% / 0.04);
   }
   .modal-shadow {
     box-shadow:
-      0 24px 48px -12px hsl(222 84% 11% / 0.15),
-      0 8px 24px -8px hsl(222 84% 11% / 0.08);
+      0 24px 48px -12px hsl(222 84% 11% / 0.18),
+      0 12px 24px -8px hsl(222 84% 11% / 0.08),
+      0 0 0 1px hsl(var(--border) / 0.5);
   }
   .kpi-gradient {
     background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--background)) 100%);
   }
   .glass-header {
-    backdrop-filter: blur(12px) saturate(180%);
-    -webkit-backdrop-filter: blur(12px) saturate(180%);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
   }
 }

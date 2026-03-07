@@ -91,16 +91,16 @@ export default function SettingsPage() {
     exportToPdf("Quarterly Summary Report", headers, rows);
   };
 
-  const sectionClass = "rounded-xl border border-border bg-card p-6 card-shadow space-y-4";
+  const sectionClass = "rounded-xl border border-border/80 bg-card p-6 card-shadow space-y-4";
   const labelClass = "text-[12px] font-medium text-muted-foreground mb-1.5 block";
-  const inputClass = "w-full px-3 py-2 rounded-lg border border-border bg-background text-[13px] focus:ring-2 focus:ring-ring outline-none";
-  const disabledInputClass = "w-full px-3 py-2 rounded-lg border border-border bg-accent/50 text-[13px] text-muted-foreground";
+  const inputClass = "w-full px-3.5 py-2.5 rounded-lg border border-border bg-background text-[13px] focus:ring-2 focus:ring-ring/20 focus:border-ring outline-none transition-all";
+  const disabledInputClass = "w-full px-3.5 py-2.5 rounded-lg border border-border bg-muted/40 text-[13px] text-muted-foreground";
 
   return (
-    <div className="space-y-5 max-w-[800px] mx-auto">
+    <div className="space-y-5 max-w-[800px] mx-auto animate-fade-in">
       {/* Profile */}
       <div className={sectionClass}>
-        <h3 className="font-semibold text-foreground flex items-center gap-2 text-[15px]"><User className="w-4 h-4 text-muted-foreground" /> Profile</h3>
+        <h3 className="font-semibold text-foreground flex items-center gap-2.5 text-[15px] tracking-[-0.01em]"><User className="w-4 h-4 text-muted-foreground" /> Profile</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>Full Name</label>
@@ -115,7 +115,7 @@ export default function SettingsPage() {
             <input type="text" value={role ? role.charAt(0).toUpperCase() + role.slice(1) : "No role assigned"} disabled className={disabledInputClass} />
           </div>
           <div className="flex items-end">
-            <button onClick={handleSaveProfile} disabled={saving} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-[13px] font-medium hover:opacity-90 transition-opacity disabled:opacity-50">
+            <button onClick={handleSaveProfile} disabled={saving} className="px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-[13px] font-medium hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50">
               {saving ? "Saving…" : "Save Profile"}
             </button>
           </div>
@@ -124,7 +124,7 @@ export default function SettingsPage() {
 
       {/* Company */}
       <div className={sectionClass}>
-        <h3 className="font-semibold text-foreground flex items-center gap-2 text-[15px]"><Building2 className="w-4 h-4 text-muted-foreground" /> Company</h3>
+        <h3 className="font-semibold text-foreground flex items-center gap-2.5 text-[15px] tracking-[-0.01em]"><Building2 className="w-4 h-4 text-muted-foreground" /> Company</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className={labelClass}>Company Name</label>
@@ -135,7 +135,7 @@ export default function SettingsPage() {
             <input type="text" defaultValue="ETB (Ethiopian Birr)" disabled className={disabledInputClass} />
           </div>
           <div className="flex items-end">
-            <button onClick={handleSaveCompany} disabled={updateCompanyName.isPending} className="px-4 py-2 rounded-lg bg-primary text-primary-foreground text-[13px] font-medium hover:opacity-90 transition-opacity disabled:opacity-50">
+            <button onClick={handleSaveCompany} disabled={updateCompanyName.isPending} className="px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-[13px] font-medium hover:opacity-90 active:scale-[0.98] transition-all disabled:opacity-50">
               {updateCompanyName.isPending ? "Saving…" : "Save Company"}
             </button>
           </div>
@@ -144,28 +144,28 @@ export default function SettingsPage() {
 
       {/* Notifications */}
       <div className={sectionClass}>
-        <h3 className="font-semibold text-foreground flex items-center gap-2 text-[15px]"><Bell className="w-4 h-4 text-muted-foreground" /> Notifications & Alerts</h3>
-        <div className="flex items-center justify-between p-3 rounded-lg bg-accent/30 border border-border/50">
+        <h3 className="font-semibold text-foreground flex items-center gap-2.5 text-[15px] tracking-[-0.01em]"><Bell className="w-4 h-4 text-muted-foreground" /> Notifications & Alerts</h3>
+        <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border/50">
           <div>
             <div className="text-[13px] font-medium text-foreground">Low Stock Alerts</div>
-            <div className="text-[12px] text-muted-foreground">Notify when stock drops below threshold</div>
+            <div className="text-[12px] text-muted-foreground mt-0.5">Notify when stock drops below threshold</div>
           </div>
           <div className="flex items-center gap-2">
             <label className="text-[12px] text-muted-foreground">Threshold:</label>
-            <input type="number" value={threshold} onChange={(e) => setThreshold(parseInt(e.target.value) || 3)} className="w-16 px-2 py-1.5 rounded-lg border border-border bg-background text-[13px] text-center focus:ring-2 focus:ring-ring outline-none" />
+            <input type="number" value={threshold} onChange={(e) => setThreshold(parseInt(e.target.value) || 3)} className="w-16 px-2.5 py-1.5 rounded-lg border border-border bg-background text-[13px] text-center focus:ring-2 focus:ring-ring/20 outline-none transition-all" />
           </div>
         </div>
       </div>
 
       {/* Roles */}
       <div className={sectionClass}>
-        <h3 className="font-semibold text-foreground flex items-center gap-2 text-[15px]"><Shield className="w-4 h-4 text-muted-foreground" /> Roles & Permissions</h3>
+        <h3 className="font-semibold text-foreground flex items-center gap-2.5 text-[15px] tracking-[-0.01em]"><Shield className="w-4 h-4 text-muted-foreground" /> Roles & Permissions</h3>
         <div className="space-y-2">
-          <div className="flex items-center justify-between p-3 rounded-lg bg-accent/30 border border-border/50">
+          <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border/50">
             <span className="font-medium text-[13px]">Owner</span>
             <span className="text-[12px] text-muted-foreground">Full access — import, sell, edit, delete, manage team</span>
           </div>
-          <div className="flex items-center justify-between p-3 rounded-lg bg-accent/30 border border-border/50">
+          <div className="flex items-center justify-between p-4 rounded-lg bg-muted/30 border border-border/50">
             <span className="font-medium text-[13px]">Manager</span>
             <span className="text-[12px] text-muted-foreground">Can import & view products — no selling, editing, or deleting</span>
           </div>
@@ -175,13 +175,13 @@ export default function SettingsPage() {
       {/* Team */}
       {role === "owner" && (
         <div className={sectionClass}>
-          <h3 className="font-semibold text-foreground flex items-center gap-2 text-[15px]"><Users className="w-4 h-4 text-muted-foreground" /> Team Members</h3>
+          <h3 className="font-semibold text-foreground flex items-center gap-2.5 text-[15px] tracking-[-0.01em]"><Users className="w-4 h-4 text-muted-foreground" /> Team Members</h3>
           {otherMembers.length === 0 ? (
-            <p className="text-[13px] text-muted-foreground">No other team members yet.</p>
+            <p className="text-[13px] text-muted-foreground py-2">No other team members yet.</p>
           ) : (
             <div className="space-y-2">
               {otherMembers.map((m) => (
-                <div key={m.user_id} className="flex items-center justify-between p-3 rounded-lg border border-border bg-accent/20">
+                <div key={m.user_id} className="flex items-center justify-between p-4 rounded-lg border border-border/80 bg-muted/20">
                   <div className="min-w-0">
                     <div className="font-medium text-[13px] text-foreground truncate">{m.full_name || "Unnamed"}</div>
                     <div className="text-[12px] text-muted-foreground truncate">{m.email}</div>
@@ -189,7 +189,7 @@ export default function SettingsPage() {
                   <select
                     value={m.role}
                     onChange={(e) => handleRoleChange(m.user_id, e.target.value as "owner" | "manager")}
-                    className="px-3 py-1.5 rounded-lg border border-border bg-background text-[13px] text-foreground ml-3 shrink-0"
+                    className="px-3 py-1.5 rounded-lg border border-border bg-card text-[13px] text-foreground ml-3 shrink-0"
                   >
                     <option value="manager">Manager</option>
                     <option value="owner">Owner</option>
@@ -203,17 +203,17 @@ export default function SettingsPage() {
 
       {/* Data */}
       <div className={sectionClass}>
-        <h3 className="font-semibold text-foreground flex items-center gap-2 text-[15px]"><Database className="w-4 h-4 text-muted-foreground" /> Data & Export</h3>
+        <h3 className="font-semibold text-foreground flex items-center gap-2.5 text-[15px] tracking-[-0.01em]"><Database className="w-4 h-4 text-muted-foreground" /> Data & Export</h3>
         <div className="flex flex-wrap gap-2">
-          <button onClick={handleExportCsv} className="px-4 py-2 rounded-lg border border-border bg-background text-[13px] font-medium hover:bg-accent transition-colors">Export All Data (CSV)</button>
-          <button onClick={handleExportPdf} className="px-4 py-2 rounded-lg border border-border bg-background text-[13px] font-medium hover:bg-accent transition-colors">Export All Data (PDF)</button>
-          <button onClick={handleMonthlyReport} className="px-4 py-2 rounded-lg border border-border bg-background text-[13px] font-medium hover:bg-accent transition-colors">Monthly Report</button>
-          <button onClick={handleQuarterlyReport} className="px-4 py-2 rounded-lg border border-border bg-background text-[13px] font-medium hover:bg-accent transition-colors">Quarterly Report</button>
+          <button onClick={handleExportCsv} className="px-4 py-2.5 rounded-lg border border-border bg-card text-[13px] font-medium hover:bg-accent active:scale-[0.98] transition-all">Export All Data (CSV)</button>
+          <button onClick={handleExportPdf} className="px-4 py-2.5 rounded-lg border border-border bg-card text-[13px] font-medium hover:bg-accent active:scale-[0.98] transition-all">Export All Data (PDF)</button>
+          <button onClick={handleMonthlyReport} className="px-4 py-2.5 rounded-lg border border-border bg-card text-[13px] font-medium hover:bg-accent active:scale-[0.98] transition-all">Monthly Report</button>
+          <button onClick={handleQuarterlyReport} className="px-4 py-2.5 rounded-lg border border-border bg-card text-[13px] font-medium hover:bg-accent active:scale-[0.98] transition-all">Quarterly Report</button>
         </div>
       </div>
 
       <div className="flex justify-end pb-4">
-        <button onClick={signOut} className="px-4 py-2 rounded-lg bg-destructive text-destructive-foreground text-[13px] font-medium hover:opacity-90 transition-opacity">Log Out</button>
+        <button onClick={signOut} className="px-4 py-2.5 rounded-lg bg-destructive text-destructive-foreground text-[13px] font-medium hover:opacity-90 active:scale-[0.98] transition-all">Log Out</button>
       </div>
     </div>
   );

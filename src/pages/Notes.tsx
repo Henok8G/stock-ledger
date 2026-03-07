@@ -5,10 +5,10 @@ import { format } from "date-fns";
 
 const NOTE_COLORS: { key: string; label: string; bg: string; border: string; dot: string }[] = [
   { key: "default", label: "Default", bg: "bg-card", border: "border-border", dot: "bg-muted-foreground" },
-  { key: "yellow",  label: "Amber",   bg: "bg-warning/10", border: "border-warning/30", dot: "bg-warning" },
-  { key: "blue",    label: "Blue",    bg: "bg-info/10",    border: "border-info/30",    dot: "bg-info" },
-  { key: "green",   label: "Green",   bg: "bg-success/10", border: "border-success/30", dot: "bg-success" },
-  { key: "red",     label: "Red",     bg: "bg-destructive/10", border: "border-destructive/30", dot: "bg-destructive" },
+  { key: "yellow",  label: "Amber",   bg: "bg-warning/8", border: "border-warning/20", dot: "bg-warning" },
+  { key: "blue",    label: "Blue",    bg: "bg-info/8",    border: "border-info/20",    dot: "bg-info" },
+  { key: "green",   label: "Green",   bg: "bg-success/8", border: "border-success/20", dot: "bg-success" },
+  { key: "red",     label: "Red",     bg: "bg-destructive/8", border: "border-destructive/20", dot: "bg-destructive" },
 ];
 
 function colorMeta(key: string) {
@@ -74,20 +74,20 @@ export default function Notes() {
   const charCount = content.length;
 
   return (
-    <div className="max-w-[1400px] mx-auto space-y-4">
+    <div className="max-w-[1400px] mx-auto space-y-4 animate-fade-in">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <StickyNote className="w-4 h-4 text-primary" />
-          <h4 className="font-semibold text-foreground text-[15px]">Notes</h4>
+          <h4 className="font-semibold text-foreground text-[15px] tracking-[-0.01em]">Notes</h4>
         </div>
         <span className="text-[12px] text-muted-foreground">{notes.length} note{notes.length !== 1 ? "s" : ""} total</span>
       </div>
 
       <div className="grid lg:grid-cols-[1fr_360px] gap-6 items-start">
         {/* Editor */}
-        <div className="rounded-xl border border-border bg-card card-shadow overflow-hidden">
-          <div className="px-5 py-3.5 border-b border-border flex items-center justify-between">
-            <span className="text-[13px] font-medium text-foreground">
+        <div className="rounded-xl border border-border/80 bg-card card-shadow overflow-hidden">
+          <div className="px-5 py-3.5 border-b border-border/80 flex items-center justify-between">
+            <span className="text-[13px] font-semibold text-foreground">
               {editingId ? "Edit Note" : "New Note"}
             </span>
             {editingId && (
@@ -102,20 +102,20 @@ export default function Notes() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Note title…"
-              className="w-full bg-transparent text-[16px] font-semibold text-foreground placeholder:text-muted-foreground/40 outline-none border-none tracking-tight"
+              className="w-full bg-transparent text-[16px] font-semibold text-foreground placeholder:text-muted-foreground/35 outline-none border-none tracking-[-0.01em]"
             />
 
-            <div className="h-px bg-border" />
+            <div className="h-px bg-border/60" />
 
-            <div className="flex items-center gap-2">
-              <span className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">Color:</span>
+            <div className="flex items-center gap-2.5">
+              <span className="text-[11px] text-muted-foreground font-medium uppercase tracking-[0.05em]">Color:</span>
               <div className="flex gap-1.5">
                 {NOTE_COLORS.map((c) => (
                   <button
                     key={c.key}
                     onClick={() => setColor(c.key)}
                     title={c.label}
-                    className={`w-5 h-5 rounded-full border-2 transition-all ${c.dot} ${color === c.key ? "border-foreground scale-110 shadow-sm" : "border-transparent opacity-60 hover:opacity-100"}`}
+                    className={`w-5 h-5 rounded-full border-2 transition-all duration-150 ${c.dot} ${color === c.key ? "border-foreground scale-110 shadow-sm" : "border-transparent opacity-50 hover:opacity-80"}`}
                   />
                 ))}
               </div>
@@ -126,15 +126,15 @@ export default function Notes() {
               onChange={(e) => setContent(e.target.value)}
               placeholder="Write your note here… Use this space for reminders, observations, supplier notes, or anything your team needs to know."
               rows={12}
-              className="w-full bg-transparent text-[13px] text-foreground placeholder:text-muted-foreground/40 outline-none resize-none leading-relaxed"
+              className="w-full bg-transparent text-[13px] text-foreground placeholder:text-muted-foreground/35 outline-none resize-none leading-relaxed"
             />
 
-            <div className="flex items-center justify-between pt-3 border-t border-border">
+            <div className="flex items-center justify-between pt-3 border-t border-border/60">
               <span className="text-[11px] text-muted-foreground">{wordCount} words · {charCount} chars</span>
               <button
                 onClick={handleSave}
                 disabled={createNote.isPending || updateNote.isPending || (!title.trim() && !content.trim())}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground text-[13px] font-medium hover:opacity-90 disabled:opacity-40 transition-opacity"
+                className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-[13px] font-medium hover:opacity-90 active:scale-[0.98] disabled:opacity-40 transition-all"
               >
                 <Save className="w-3.5 h-3.5" />
                 {editingId ? "Update Note" : "Save Note"}
@@ -145,22 +145,22 @@ export default function Notes() {
 
         {/* Right panel */}
         <div className="space-y-4">
-          <div className="flex items-center gap-2 px-3 py-[7px] rounded-lg border border-border bg-card">
-            <Search className="w-3.5 h-3.5 text-muted-foreground shrink-0 opacity-50" />
+          <div className="flex items-center gap-2 px-3 py-[7px] rounded-lg border border-border/80 bg-card">
+            <Search className="w-3.5 h-3.5 text-muted-foreground shrink-0 opacity-40" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search notes…"
-              className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-muted-foreground/50 text-foreground"
+              className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-muted-foreground/40 text-foreground"
             />
           </div>
 
-          <div className="rounded-xl border border-border bg-card card-shadow overflow-hidden">
-            <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-              <span className="text-[13px] font-medium text-foreground">Note History</span>
+          <div className="rounded-xl border border-border/80 bg-card card-shadow overflow-hidden">
+            <div className="px-4 py-3 border-b border-border/80 flex items-center justify-between">
+              <span className="text-[13px] font-semibold text-foreground">Note History</span>
               <span className="text-[11px] text-muted-foreground">{filtered.length} notes</span>
             </div>
-            <div className="divide-y divide-border/60 max-h-[420px] overflow-y-auto">
+            <div className="divide-y divide-border/50 max-h-[420px] overflow-y-auto">
               {isLoading && (
                 <div className="px-4 py-8 text-center text-[13px] text-muted-foreground">Loading…</div>
               )}
@@ -173,7 +173,7 @@ export default function Notes() {
                   <div
                     key={note.id}
                     onClick={() => setSelectedNote(selectedNote?.id === note.id ? null : note)}
-                    className={`group px-4 py-3 cursor-pointer hover:bg-accent/30 transition-colors ${selectedNote?.id === note.id ? "bg-accent/40" : ""}`}
+                    className={`group px-4 py-3 cursor-pointer hover:bg-muted/30 transition-colors ${selectedNote?.id === note.id ? "bg-muted/40" : ""}`}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div className="flex items-start gap-2 min-w-0">
@@ -214,8 +214,8 @@ export default function Notes() {
             const cm = colorMeta(selectedNote.color);
             return (
               <div className={`rounded-xl border ${cm.border} ${cm.bg} card-shadow overflow-hidden`}>
-                <div className="px-4 py-3 border-b border-border/40 flex items-center justify-between">
-                  <span className="text-[13px] font-medium text-foreground">Note Detail</span>
+                <div className="px-4 py-3 border-b border-border/30 flex items-center justify-between">
+                  <span className="text-[13px] font-semibold text-foreground">Note Detail</span>
                   <div className="flex items-center gap-1">
                     <button onClick={() => handleEdit(selectedNote)} className="p-1 rounded-md hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground">
                       <Pencil className="w-3.5 h-3.5" />
@@ -230,8 +230,8 @@ export default function Notes() {
                 </div>
                 <div className="px-4 py-4 space-y-3">
                   <div>
-                    <div className="text-[11px] text-muted-foreground mb-0.5 uppercase tracking-wider font-medium">Title</div>
-                    <div className="text-[15px] font-semibold text-foreground tracking-tight">{selectedNote.title}</div>
+                    <div className="text-[11px] text-muted-foreground mb-0.5 uppercase tracking-[0.05em] font-medium">Title</div>
+                    <div className="text-[15px] font-semibold text-foreground tracking-[-0.01em]">{selectedNote.title}</div>
                   </div>
                   <div className="grid grid-cols-2 gap-3 text-[12px]">
                     <div>
@@ -243,9 +243,9 @@ export default function Notes() {
                       <div className="font-medium text-foreground">{formatDate(selectedNote.updated_at)}</div>
                     </div>
                   </div>
-                  <div className="h-px bg-border/40" />
+                  <div className="h-px bg-border/30" />
                   <div>
-                    <div className="text-[11px] text-muted-foreground mb-1.5 uppercase tracking-wider font-medium">Content</div>
+                    <div className="text-[11px] text-muted-foreground mb-1.5 uppercase tracking-[0.05em] font-medium">Content</div>
                     <div className="text-[13px] text-foreground whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">
                       {selectedNote.content || <span className="text-muted-foreground italic">No content</span>}
                     </div>
