@@ -18,12 +18,12 @@ export default function DetailDrawer({ open, onClose, title, children }: DetailD
         onClick={onClose}
         aria-hidden
       />
-      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-background border-l border-border modal-shadow animate-slide-in-right flex flex-col">
-        <div className="flex items-center justify-between h-[52px] px-5 border-b border-border shrink-0">
-          <h3 className="text-[15px] font-semibold truncate tracking-tight">{title}</h3>
+      <div className="fixed inset-y-0 right-0 z-50 w-full max-w-md bg-card border-l border-border modal-shadow animate-slide-in-right flex flex-col">
+        <div className="flex items-center justify-between h-[52px] px-5 border-b border-border/80 shrink-0">
+          <h3 className="text-[15px] font-semibold truncate tracking-[-0.01em]">{title}</h3>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg hover:bg-accent transition-colors text-muted-foreground"
+            className="p-1.5 rounded-lg hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
             aria-label="Close drawer"
           >
             <X className="w-4 h-4" />

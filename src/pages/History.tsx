@@ -70,10 +70,10 @@ export default function HistoryPage() {
   };
 
   return (
-    <div className="space-y-4 max-w-[1400px] mx-auto">
-      <div className="flex items-center gap-1 p-1 rounded-lg bg-accent/60 border border-border/50 w-fit">
+    <div className="space-y-5 max-w-[1400px] mx-auto animate-fade-in">
+      <div className="flex items-center gap-1 p-1 rounded-lg bg-muted/50 border border-border/50 w-fit">
         {tabs.map((tab) => (
-          <button key={tab} onClick={() => setActiveTab(tab)} className={`px-4 py-[6px] rounded-md text-[13px] font-medium transition-all ${activeTab === tab ? "bg-background text-foreground card-shadow" : "text-muted-foreground hover:text-foreground"}`}>
+          <button key={tab} onClick={() => setActiveTab(tab)} className={`px-4 py-[6px] rounded-md text-[13px] font-medium transition-all duration-150 ${activeTab === tab ? "bg-card text-foreground card-shadow" : "text-muted-foreground hover:text-foreground"}`}>
             {tab}
           </button>
         ))}
@@ -82,47 +82,47 @@ export default function HistoryPage() {
       {activeTab === "Sales History" ? (
         <div className="space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="rounded-lg border border-border bg-card p-4 card-shadow flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-accent"><ShoppingCart className="w-4 h-4 text-foreground" /></div>
-              <div><div className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold">Total Sold</div><div className="text-lg font-bold tracking-tight">{totalSold}</div></div>
+            <div className="rounded-xl border border-border/80 bg-card p-4 card-shadow flex items-center gap-3">
+              <div className="p-2.5 rounded-lg bg-muted/60"><ShoppingCart className="w-4 h-4 text-foreground" /></div>
+              <div><div className="text-[11px] text-muted-foreground uppercase tracking-[0.05em] font-medium">Total Sold</div><div className="text-lg font-bold tracking-tight tabular-nums">{totalSold}</div></div>
             </div>
-            <div className="rounded-lg border border-border bg-card p-4 card-shadow flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-accent"><DollarSign className="w-4 h-4 text-foreground" /></div>
-              <div><div className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold">Total Revenue</div><div className="text-lg font-bold tracking-tight">{formatETB(totalRevenue)}</div></div>
+            <div className="rounded-xl border border-border/80 bg-card p-4 card-shadow flex items-center gap-3">
+              <div className="p-2.5 rounded-lg bg-muted/60"><DollarSign className="w-4 h-4 text-foreground" /></div>
+              <div><div className="text-[11px] text-muted-foreground uppercase tracking-[0.05em] font-medium">Total Revenue</div><div className="text-lg font-bold tracking-tight tabular-nums">{formatETB(totalRevenue)}</div></div>
             </div>
-            <div className="rounded-lg border border-border bg-card p-4 card-shadow flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-success/10"><TrendingUp className="w-4 h-4 text-success" /></div>
-              <div><div className="text-[11px] text-muted-foreground uppercase tracking-wider font-semibold">Total Profit</div><div className="text-lg font-bold text-success tracking-tight">{formatETB(totalProfit)}</div></div>
+            <div className="rounded-xl border border-border/80 bg-card p-4 card-shadow flex items-center gap-3">
+              <div className="p-2.5 rounded-lg bg-success/8"><TrendingUp className="w-4 h-4 text-success" /></div>
+              <div><div className="text-[11px] text-muted-foreground uppercase tracking-[0.05em] font-medium">Total Profit</div><div className="text-lg font-bold text-success tracking-tight tabular-nums">{formatETB(totalProfit)}</div></div>
             </div>
           </div>
 
           {profitOverTime.length > 0 && (
-            <div className="grid lg:grid-cols-2 gap-6">
-              <div className="rounded-lg border border-border bg-card p-5 card-shadow">
-                <h4 className="font-medium text-foreground mb-4 text-[14px]">Profit Over Time</h4>
+            <div className="grid lg:grid-cols-2 gap-4">
+              <div className="rounded-xl border border-border/80 bg-card p-5 card-shadow">
+                <h4 className="font-semibold text-foreground mb-4 text-[14px] tracking-[-0.01em]">Profit Over Time</h4>
                 <div className="h-[220px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={profitOverTime}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                       <XAxis dataKey="date" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
                       <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-                      <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} formatter={(value: number) => [formatETB(value), ""]} />
+                      <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 10, fontSize: 12 }} formatter={(value: number) => [formatETB(value), ""]} />
                       <Line type="monotone" dataKey="profit" stroke="hsl(var(--chart-2))" strokeWidth={2} dot={{ r: 3 }} />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
               </div>
-              <div className="rounded-lg border border-border bg-card p-5 card-shadow">
-                <h4 className="font-medium text-foreground mb-4 text-[14px]">Revenue vs Cost</h4>
+              <div className="rounded-xl border border-border/80 bg-card p-5 card-shadow">
+                <h4 className="font-semibold text-foreground mb-4 text-[14px] tracking-[-0.01em]">Revenue vs Cost</h4>
                 <div className="h-[220px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={profitOverTime}>
                       <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
                       <XAxis dataKey="date" tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" />
                       <YAxis tick={{ fontSize: 11 }} stroke="hsl(var(--muted-foreground))" tickFormatter={(v) => `${(v / 1000).toFixed(0)}k`} />
-                      <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} formatter={(value: number) => [formatETB(value), ""]} />
-                      <Bar dataKey="revenue" fill="hsl(var(--chart-4))" radius={[4, 4, 0, 0]} />
-                      <Bar dataKey="cost" fill="hsl(var(--chart-5))" radius={[4, 4, 0, 0]} />
+                      <Tooltip contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: 10, fontSize: 12 }} formatter={(value: number) => [formatETB(value), ""]} />
+                      <Bar dataKey="revenue" fill="hsl(var(--chart-4))" radius={[5, 5, 0, 0]} />
+                      <Bar dataKey="cost" fill="hsl(var(--chart-5))" radius={[5, 5, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
@@ -130,77 +130,77 @@ export default function HistoryPage() {
             </div>
           )}
 
-          <div className="rounded-lg border border-border bg-card card-shadow overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-              <h4 className="font-medium text-foreground text-[14px]">Sales Records</h4>
+          <div className="rounded-xl border border-border/80 bg-card card-shadow overflow-hidden">
+            <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/80">
+              <h4 className="font-semibold text-foreground text-[14px] tracking-[-0.01em]">Sales Records</h4>
               <div className="flex gap-2">
-                <button onClick={handleExportSales} className="flex items-center gap-1.5 px-3 py-[6px] rounded-lg border border-border bg-background text-[12px] font-medium hover:bg-accent transition-colors"><FileDown className="w-3.5 h-3.5" /> CSV</button>
-                <button onClick={handleExportSalesPdf} className="flex items-center gap-1.5 px-3 py-[6px] rounded-lg border border-border bg-background text-[12px] font-medium hover:bg-accent transition-colors"><FileDown className="w-3.5 h-3.5" /> PDF</button>
+                <button onClick={handleExportSales} className="flex items-center gap-1.5 px-3 py-[6px] rounded-lg border border-border bg-card text-[12px] font-medium hover:bg-accent active:scale-[0.98] transition-all"><FileDown className="w-3.5 h-3.5" /> CSV</button>
+                <button onClick={handleExportSalesPdf} className="flex items-center gap-1.5 px-3 py-[6px] rounded-lg border border-border bg-card text-[12px] font-medium hover:bg-accent active:scale-[0.98] transition-all"><FileDown className="w-3.5 h-3.5" /> PDF</button>
               </div>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-[13px]">
+              <table className="w-full">
                 <thead>
-                  <tr className="border-b border-border bg-accent/40">
-                    <th className="text-left px-4 py-2.5 text-muted-foreground">Date</th>
-                    <th className="text-left px-4 py-2.5 text-muted-foreground">Item</th>
-                    <th className="text-right px-4 py-2.5 text-muted-foreground">Qty</th>
-                    <th className="text-right px-4 py-2.5 text-muted-foreground">Revenue</th>
-                    <th className="text-right px-4 py-2.5 text-muted-foreground">Cost</th>
-                    <th className="text-right px-4 py-2.5 text-muted-foreground">Profit</th>
-                    <th className="text-left px-4 py-2.5 text-muted-foreground">Payment</th>
+                  <tr className="border-b border-border bg-muted/40">
+                    <th className="text-left px-5 py-2.5 text-muted-foreground font-medium">Date</th>
+                    <th className="text-left px-5 py-2.5 text-muted-foreground font-medium">Item</th>
+                    <th className="text-right px-5 py-2.5 text-muted-foreground font-medium">Qty</th>
+                    <th className="text-right px-5 py-2.5 text-muted-foreground font-medium">Revenue</th>
+                    <th className="text-right px-5 py-2.5 text-muted-foreground font-medium">Cost</th>
+                    <th className="text-right px-5 py-2.5 text-muted-foreground font-medium">Profit</th>
+                    <th className="text-left px-5 py-2.5 text-muted-foreground font-medium">Payment</th>
                   </tr>
                 </thead>
                 <tbody>
                   {sales.map((s) => (
-                    <tr key={s.id} className="border-b border-border/60 last:border-0 hover:bg-accent/20 transition-colors">
-                      <td className="px-4 py-3 text-[12px] text-muted-foreground">{formatDateTime(s.date)}</td>
-                      <td className="px-4 py-3 font-medium text-foreground">{s.product_name}</td>
-                      <td className="px-4 py-3 text-right tabular-nums">{s.qty}</td>
-                      <td className="px-4 py-3 text-right tabular-nums">{formatETB(Number(s.unit_selling_price) * s.qty)}</td>
-                      <td className="px-4 py-3 text-right text-muted-foreground tabular-nums">{formatETB(Number(s.unit_buying_price) * s.qty)}</td>
-                      <td className="px-4 py-3 text-right font-medium text-success tabular-nums">{formatETB(Number(s.profit))}</td>
-                      <td className="px-4 py-3 text-[12px] text-muted-foreground">{s.payment_method}</td>
+                    <tr key={s.id} className="border-b border-border/50 last:border-0 hover:bg-muted/25 transition-colors">
+                      <td className="px-5 py-3 text-[12px] text-muted-foreground">{formatDateTime(s.date)}</td>
+                      <td className="px-5 py-3 font-medium text-foreground">{s.product_name}</td>
+                      <td className="px-5 py-3 text-right tabular-nums">{s.qty}</td>
+                      <td className="px-5 py-3 text-right tabular-nums">{formatETB(Number(s.unit_selling_price) * s.qty)}</td>
+                      <td className="px-5 py-3 text-right text-muted-foreground tabular-nums">{formatETB(Number(s.unit_buying_price) * s.qty)}</td>
+                      <td className="px-5 py-3 text-right font-medium text-success tabular-nums">{formatETB(Number(s.profit))}</td>
+                      <td className="px-5 py-3 text-[12px] text-muted-foreground">{s.payment_method}</td>
                     </tr>
                   ))}
-                  {sales.length === 0 && <tr><td colSpan={7} className="px-4 py-10 text-center text-muted-foreground text-[13px]">No sales yet.</td></tr>}
+                  {sales.length === 0 && <tr><td colSpan={7} className="px-5 py-12 text-center text-muted-foreground text-[13px]">No sales yet</td></tr>}
                 </tbody>
               </table>
             </div>
           </div>
         </div>
       ) : (
-        <div className="rounded-lg border border-border bg-card card-shadow overflow-hidden">
-          <div className="flex items-center justify-between px-4 py-3 border-b border-border">
-            <h4 className="font-medium text-foreground text-[14px]">Inventory Events</h4>
-            <button onClick={handleExportInventory} className="flex items-center gap-1.5 px-3 py-[6px] rounded-lg border border-border bg-background text-[12px] font-medium hover:bg-accent transition-colors"><FileDown className="w-3.5 h-3.5" /> Export</button>
+        <div className="rounded-xl border border-border/80 bg-card card-shadow overflow-hidden">
+          <div className="flex items-center justify-between px-5 py-3.5 border-b border-border/80">
+            <h4 className="font-semibold text-foreground text-[14px] tracking-[-0.01em]">Inventory Events</h4>
+            <button onClick={handleExportInventory} className="flex items-center gap-1.5 px-3 py-[6px] rounded-lg border border-border bg-card text-[12px] font-medium hover:bg-accent active:scale-[0.98] transition-all"><FileDown className="w-3.5 h-3.5" /> Export</button>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-[13px]">
+            <table className="w-full">
               <thead>
-                <tr className="border-b border-border bg-accent/40">
-                  <th className="text-left px-4 py-2.5 text-muted-foreground">Event Type</th>
-                  <th className="text-left px-4 py-2.5 text-muted-foreground">Item</th>
-                  <th className="text-left px-4 py-2.5 text-muted-foreground">Category</th>
-                  <th className="text-right px-4 py-2.5 text-muted-foreground">Qty</th>
-                  <th className="text-right px-4 py-2.5 text-muted-foreground">Unit Price</th>
-                  <th className="text-right px-4 py-2.5 text-muted-foreground">Total</th>
-                  <th className="text-left px-4 py-2.5 text-muted-foreground">Date</th>
+                <tr className="border-b border-border bg-muted/40">
+                  <th className="text-left px-5 py-2.5 text-muted-foreground font-medium">Event Type</th>
+                  <th className="text-left px-5 py-2.5 text-muted-foreground font-medium">Item</th>
+                  <th className="text-left px-5 py-2.5 text-muted-foreground font-medium">Category</th>
+                  <th className="text-right px-5 py-2.5 text-muted-foreground font-medium">Qty</th>
+                  <th className="text-right px-5 py-2.5 text-muted-foreground font-medium">Unit Price</th>
+                  <th className="text-right px-5 py-2.5 text-muted-foreground font-medium">Total</th>
+                  <th className="text-left px-5 py-2.5 text-muted-foreground font-medium">Date</th>
                 </tr>
               </thead>
               <tbody>
                 {inventoryHistory.map((e, i) => (
-                  <tr key={i} className="border-b border-border/60 last:border-0 hover:bg-accent/20 transition-colors">
-                    <td className="px-4 py-3">{typeBadge(e.type)}</td>
-                    <td className="px-4 py-3 font-medium text-foreground">{e.item}</td>
-                    <td className="px-4 py-3 text-muted-foreground">{e.category}</td>
-                    <td className="px-4 py-3 text-right tabular-nums">{e.qty}</td>
-                    <td className="px-4 py-3 text-right tabular-nums">{formatETB(e.unit_price)}</td>
-                    <td className="px-4 py-3 text-right font-medium tabular-nums">{formatETB(Math.abs(e.total))}</td>
-                    <td className="px-4 py-3 text-[12px] text-muted-foreground">{formatDateTime(e.date)}</td>
+                  <tr key={i} className="border-b border-border/50 last:border-0 hover:bg-muted/25 transition-colors">
+                    <td className="px-5 py-3">{typeBadge(e.type)}</td>
+                    <td className="px-5 py-3 font-medium text-foreground">{e.item}</td>
+                    <td className="px-5 py-3 text-muted-foreground">{e.category}</td>
+                    <td className="px-5 py-3 text-right tabular-nums">{e.qty}</td>
+                    <td className="px-5 py-3 text-right tabular-nums">{formatETB(e.unit_price)}</td>
+                    <td className="px-5 py-3 text-right font-medium tabular-nums">{formatETB(Math.abs(e.total))}</td>
+                    <td className="px-5 py-3 text-[12px] text-muted-foreground">{formatDateTime(e.date)}</td>
                   </tr>
                 ))}
-                {inventoryHistory.length === 0 && <tr><td colSpan={7} className="px-4 py-10 text-center text-muted-foreground text-[13px]">No history yet.</td></tr>}
+                {inventoryHistory.length === 0 && <tr><td colSpan={7} className="px-5 py-12 text-center text-muted-foreground text-[13px]">No history yet</td></tr>}
               </tbody>
             </table>
           </div>
